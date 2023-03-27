@@ -5,29 +5,33 @@ import "izitoast/dist/css/iziToast.min.css";
 
 const Search: React.FC = () => {
   const [search, setSearch] = useState("");
-  const navigate = useNavigate();
+  let api = `https://pokeapi.co/api/v2/pokemon/${search}`;
 
   const handleChange = (e: SyntheticEvent) => {
     const target = e.target as HTMLInputElement;
     setSearch(target.value);
   };
+
+  const navigate = useNavigate();
+
   async function handleSubmit(e: SyntheticEvent) {
     e.preventDefault();
-    let api = `https://pokeapi.co/api/v2/pokemon/${search}`;
     try {
       const response = await fetch(api);
       const json = await response.json();
       console.log("Response status: ", response.status);
+      console.log(json);
       if (response.status === 200) {
         iziToast.success({
           title: "Success",
           position: "topRight",
-          timeout: 3000,
+          timeout: 2000,
           message: `Fetching data for ${search}...`,
         });
         console.log(json);
+        const data = JSON.stringify(json);
         setTimeout(() => {
-          navigate("/pokemon", { replace: false });
+          navigate("/pokemon", { replace: false, state: { data } });
         }, 3000);
       }
     } catch (error: any) {
@@ -37,7 +41,7 @@ const Search: React.FC = () => {
         title: "Error",
         position: "topRight",
         timeout: 3000,
-        message: `${search} not found..Check query..`,
+        message: `Pokemon not found`,
       });
     }
   }
