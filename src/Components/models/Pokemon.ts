@@ -1,4 +1,4 @@
-﻿export interface Pokemon {
+﻿export default interface Pokemon {
   abilities?: AbilitiesEntity[] | null;
   base_experience: number;
   forms?:
