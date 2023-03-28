@@ -18,7 +18,6 @@ const Search: React.FC = () => {
       const response = await fetch(api);
       const json = await response.json();
       console.log(json);
-
       console.log("Response status: ", response.status);
       if (response.status === 200) {
         iziToast.success({
