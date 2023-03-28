@@ -16,7 +16,9 @@ const Search: React.FC = () => {
     let api: string = `https://pokeapi.co/api/v2/pokemon/${search}`;
     try {
       const response = await fetch(api);
-      const json: object = await response.json();
+      const json = await response.json();
+      console.log(json);
+
       console.log("Response status: ", response.status);
       if (response.status === 200) {
         iziToast.success({
