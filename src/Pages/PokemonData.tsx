@@ -1,13 +1,12 @@
-import React, { useState, useEffect, lazy, Suspense } from "react";
-import GetPokemon from "../Components/API/GetPokemon";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-const Stats = lazy(() => {
-  return Promise.all([
-    import("../Components/Stats"),
-    new Promise((resolve) => setTimeout(resolve, 2000)),
-  ]).then(([moduleExports]) => moduleExports);
-});
+// const Stats = lazy(() => {
+//   return Promise.all([
+//     import("../Components/Stats"),
+//     new Promise((resolve) => setTimeout(resolve, 2000)),
+//   ]).then(([moduleExports]) => moduleExports);
+// });
 
 interface PokeState {
   loading: boolean;
@@ -24,37 +23,27 @@ const PokemonData: React.FC = () => {
 
   const location = useLocation();
   const pokemonReq = location.state;
+  console.log(pokemonReq);
 
   useEffect(() => {
-    setState({ ...state, loading: true });
-    GetPokemon.getPokemon(pokemonReq.search)
-      .then((response) => {
-        setState({
-          ...state,
-          loading: false,
-          pokemon: response.data,
-        });
-        console.log(response.status);
-        console.log(response.data);
-      })
-      .catch((error) => {
-        setState({
-          ...state,
-          loading: false,
-          errorMsg: "Error retreiving data",
-        });
-        console.log(error);
-      });
+    setState({
+      ...state,
+      loading: false,
+      pokemon: pokemonReq,
+    });
+    // console.log(response.status);
+    // console.log(response.data);
+
     //eslint-disable-next-line
   }, []);
 
-  const { loading, pokemon, errorMsg } = state;
+  // const { loading, pokemon, errorMsg } = state;
 
   return (
     <div className="pokemon-data flex md:flex-row flex-col">
       <div className="pokemon-image flex justify-center items-center"></div>
       <div className="pokemon-info flex flex-col justify-center items-center">
-        <h1>{errorMsg && <p>{errorMsg}</p>}</h1>
+        {/* <h1>{errorMsg && <p>{errorMsg}</p>}</h1>
         <h1>{loading && <p>{loading}</p>}</h1>
         <Suspense
           fallback={
@@ -64,7 +53,7 @@ const PokemonData: React.FC = () => {
           }
         >
           <Stats pokemon={pokemon} />
-        </Suspense>
+        </Suspense> */}
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import React, { SyntheticEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
-import GetPokemon from "./API/GetPokemon";
+// import GetPokemon from "./API/GetPokemon";
 
 const Search: React.FC = () => {
   const [search, setSearch] = useState("");
@@ -15,10 +15,12 @@ const Search: React.FC = () => {
 
   async function handleSubmit(e: SyntheticEvent) {
     e.preventDefault();
-    try {
-      const response = GetPokemon.getPokemon(search);
-      console.log((await response).status);
-      if ((await response).status === 200) {
+    const api = `https://pokeapi.co/api/v2/pokemon/${search}`;
+    fetch(api)
+      .then((res) => {
+        console.log(res);
+        const pokemonObj = res.json();
+        console.log(pokemonObj);
         iziToast.success({
           title: "Success",
           position: "topRight",
@@ -26,19 +28,19 @@ const Search: React.FC = () => {
           message: `Fetching data for ${search}...`,
         });
         setTimeout(() => {
-          navigate("/pokemon", { replace: false, state: { search } });
+          navigate("/pokemon", { replace: false, state: { pokemonObj } });
         }, 3000);
-      }
-    } catch (error: any) {
-      console.log(error);
-      setSearch("");
-      iziToast.error({
-        title: "Error",
-        position: "topRight",
-        timeout: 3000,
-        message: "Pokemon not found",
+      })
+      .catch((error: any) => {
+        console.log(error);
+        setSearch("");
+        iziToast.error({
+          title: "Error",
+          position: "topRight",
+          timeout: 3000,
+          message: "Pokemon not found",
+        });
       });
-    }
   }
   return (
     <div className="search flex justify-between flex-col p-4 bg-red-500">
