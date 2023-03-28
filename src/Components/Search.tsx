@@ -13,10 +13,10 @@ const Search: React.FC = () => {
   };
   async function handleSubmit(e: SyntheticEvent) {
     e.preventDefault();
-    let api = `https://pokeapi.co/api/v2/pokemon/${search}`;
+    let api: string = `https://pokeapi.co/api/v2/pokemon/${search}`;
     try {
       const response = await fetch(api);
-      const json = await response.json();
+      const json: object = await response.json();
       console.log("Response status: ", response.status);
       if (response.status === 200) {
         iziToast.success({
