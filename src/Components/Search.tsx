@@ -25,9 +25,8 @@ const Search: React.FC = () => {
           timeout: 3000,
           message: `Fetching data for ${search}...`,
         });
-        console.log(json);
         setTimeout(() => {
-          navigate("/pokemon", { replace: false });
+          navigate("/pokemon", { replace: false, state: json });
         }, 3000);
       }
     } catch (error: any) {
