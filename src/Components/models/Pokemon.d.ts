@@ -8,7 +8,7 @@ export interface Pokemon {
   order: number;
   sprites: Sprites;
   stats?: StatsEntity[] | null;
-  types?: TypesEntity[] | null;
+  types: TypesEntity[];
   weight: number;
 }
 
