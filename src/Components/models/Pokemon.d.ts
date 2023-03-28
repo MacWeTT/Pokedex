@@ -45,7 +45,10 @@ interface Sprites {
 }
 
 interface OtherSprite {
-  dream_world: { front_default: string; front_female?: string | null };
+  dream_world: {
+    front_default: string;
+    front_female?: string | null;
+  };
   home: {
     front_default: string;
     front_female?: string | null;

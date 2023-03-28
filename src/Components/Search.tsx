@@ -50,6 +50,7 @@ const Search: React.FC = () => {
         <h1 className="text-white text-2xl font-semibold text-center">
           Find your favourite Pokemon
         </h1>
+        {/* <div className="pokeball"></div> */}
         <div className="search-box flex items-center justify-center pt-4">
           <form
             method="get"

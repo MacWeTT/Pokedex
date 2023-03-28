@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useState, useEffect, useCallback } from "react";
+import React, { SyntheticEvent, useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Pokemon } from "../Components/models/Pokemon";
 import iziToast from "izitoast";
@@ -7,27 +7,24 @@ import "izitoast/dist/css/iziToast.min.css";
 const PokemonData: React.FC = () => {
   const location = useLocation();
   const PokemonReq = location.state;
-  // const Pokemon: Pokemon = PokemonReq as Pokemon;
-
   const [Pokemon, setPokemon] = useState<Pokemon | null>(PokemonReq as Pokemon);
 
-  const [search, setSearch] = useState("");
-  const [submit, setSubmit] = useState(false);
+  const [search, setSearch] = useState<string>("");
+  const [submit, setSubmit] = useState<boolean>(false);
 
   const handleChange = (e: SyntheticEvent) => {
     const target = e.target as HTMLInputElement;
     setSearch(target.value);
   };
 
-  const handleSubmit = useCallback((e: any) => {
+  const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     setSubmit(true);
-  }, []);
-
+  };
   const api = `https://pokeapi.co/api/v2/pokemon/${search}`;
 
   useEffect(() => {
-    if (submit) {
+    if (submit && search !== "" && search !== null) {
       fetch(api)
         .then((res) => res.json())
         .then((data) => {
@@ -52,35 +49,35 @@ const PokemonData: React.FC = () => {
     }
   }, [submit, api, search]);
 
-  if (PokemonReq === null) {
+  if (Pokemon === null) {
     return (
       <div className="container flex flex-col justify-between items-center h-screen">
         <div className="search-box flex items-center justify-center pt-4">
-          <div className="back-button pt-2 pr-4">
-            <Link to="/">
-              <button>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15.75 19.5L8.25 12l7.5-7.5"
-                  />
-                </svg>
-              </button>
-            </Link>
-          </div>
           <form
             method="get"
             onSubmit={handleSubmit}
             className="flex items-center justify-center"
           >
+            <div className="back-button px-2">
+              <Link to="/">
+                <button className="text-black hover:text-gray-500 transition-all duration-300">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15.75 19.5L8.25 12l7.5-7.5"
+                    />
+                  </svg>
+                </button>
+              </Link>
+            </div>
             <input
               type="text"
               name="search"
@@ -89,7 +86,7 @@ const PokemonData: React.FC = () => {
               placeholder="Search.."
               className="px-5 p-2 border rounded-full outline-none relative"
             />
-            <div className="search-icon px-2 text-white hover:text-black transition-all duration-300 block">
+            <div className="search-icon px-2 text-black hover:text-gray-500 transition-all duration-300 block">
               <button type="submit">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -112,7 +109,7 @@ const PokemonData: React.FC = () => {
         </div>
         <h1 className="text-center text-4xl">You haven't fetched any data!</h1>
         <br />
-        <p>
+        <p className="m-10">
           <Link
             to="/"
             className="font-medium flex items-between text-center text-2xl"
@@ -142,31 +139,31 @@ const PokemonData: React.FC = () => {
     return (
       <div>
         <div className="search-box flex items-center justify-center pt-4">
-          <div className="back-button pt-2 pr-4">
-            <Link to="/">
-              <button>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15.75 19.5L8.25 12l7.5-7.5"
-                  />
-                </svg>
-              </button>
-            </Link>
-          </div>
           <form
             method="get"
             onSubmit={handleSubmit}
             className="flex items-center justify-center"
           >
+            <div className="back-button px-2">
+              <Link to="/">
+                <button className="text-black hover:text-gray-500 transition-all duration-300">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M15.75 19.5L8.25 12l7.5-7.5"
+                    />
+                  </svg>
+                </button>
+              </Link>
+            </div>
             <input
               type="text"
               name="search"
@@ -175,7 +172,7 @@ const PokemonData: React.FC = () => {
               placeholder="Search.."
               className="px-5 p-2 border rounded-full outline-none relative"
             />
-            <div className="search-icon px-2 text-white hover:text-black transition-all duration-300 block">
+            <div className="search-icon px-2 text-black hover:text-gray-500 transition-all duration-300 block">
               <button type="submit">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
