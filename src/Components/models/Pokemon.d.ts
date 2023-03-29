@@ -6,6 +6,7 @@ export interface Pokemon {
   moves?: MovesEntity[] | null;
   name: string;
   order: number;
+  species: NameUrl;
   sprites: Sprites;
   stats?: StatsEntity[] | null;
   types: TypesEntity[];
