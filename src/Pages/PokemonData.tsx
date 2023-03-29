@@ -18,10 +18,6 @@ const PokemonData: React.FC = () => {
   );
 
   const [search, setSearch] = useState<string | null>(null);
-  const [searchID, setSearchID] = useState<string | null>(
-    Pokemon ? Pokemon.id.toString() : null
-  );
-
   const [submit, setSubmit] = useState(false);
 
   const [type1, setType1] = useState<string>(
@@ -41,51 +37,45 @@ const PokemonData: React.FC = () => {
     setSubmit(true);
   }, []);
 
-  const statsAPI = `https://pokeapi.co/api/v2/pokemon/${search}`;
-  const dataAPI = `https://pokeapi.co/api/v2/pokemon-species/${searchID}`;
-
   useEffect(() => {
     if (submit && search !== null && search !== "") {
-      fetch(statsAPI)
+      const dataAPI: string = `https://pokeapi.co/api/v2/pokemon/${search}`;
+
+      fetch(dataAPI)
         .then((res) => res.json())
         .then((data) => {
-          iziToast.success({
-            title: "Success",
-            position: "topRight",
-            timeout: 1000,
-            message: `Fetching data for ${search}...`,
-          });
+          const statsAPI: string = `https://pokeapi.co/api/v2/pokemon-species/${data?.id}`;
+          setPokemon(data as Pokemon);
           setType1(data.types[0].type.name);
           if (data.types[1]) {
             setType2(data.types[1].type.name);
           } else {
             setType2("");
           }
-          setPokemon(data as Pokemon);
-          setSearchID(data.id.toString());
+          return fetch(statsAPI);
         })
-        .catch((err) => {
-          console.log(err);
+        .then((res) => res.json())
+        .then((data) => {
+          setPokeStats(data as PokeStats);
+          iziToast.success({
+            title: "Success",
+            position: "topRight",
+            timeout: 1500,
+            message: `Fetching data for ${search}...`,
+          });
+        })
+        .catch((err: any) => {
+          console.error(err);
           iziToast.error({
             title: "Error",
             position: "topRight",
-            timeout: 2000,
+            timeout: 1500,
             message: `${search} not found..Check query..`,
           });
         });
-      fetch(dataAPI)
-        .then((res) => res.json())
-        .then((data) => {
-          setPokeStats(data);
-          console.log(data);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-      setSubmit(false);
     }
     setSubmit(false);
-  }, [submit, statsAPI, dataAPI, search, Pokemon, PokeStats, type1, type2]);
+  }, [submit, search, Pokemon, PokeStats, type1, type2]);
 
   const themeClass: string[] = [
     themeTypes[type1 as keyof Theme],
