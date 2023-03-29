@@ -12,8 +12,11 @@ const PokemonData: React.FC = () => {
   const [search, setSearch] = useState<string | null>(null);
   const [submit, setSubmit] = useState(false);
   const [Pokemon, setPokemon] = useState<Pokemon | null>(PokemonReq as Pokemon);
-  const [type, setType] = useState<string>(
+  const [type1, setType1] = useState<string>(
     Pokemon ? Pokemon.types[0].type.name : "normal"
+  );
+  const [type2, setType2] = useState<string>(
+    Pokemon ? Pokemon?.types[1]?.type?.name : ""
   );
 
   const handleChange = (e: SyntheticEvent) => {
@@ -39,10 +42,13 @@ const PokemonData: React.FC = () => {
             timeout: 1000,
             message: `Fetching data for ${search}...`,
           });
-          setPokemon(data as Pokemon);
-          if (Pokemon) {
-            setType(Pokemon.types[0].type.name);
+          setType1(data.types[0].type.name);
+          if (data.types[1]) {
+            setType2(data.types[1].type.name);
+          } else {
+            setType2("");
           }
+          setPokemon(data as Pokemon);
         })
         .catch((err) => {
           console.log(err);
@@ -55,9 +61,12 @@ const PokemonData: React.FC = () => {
         });
       setSubmit(false);
     }
-  }, [submit, api, search, Pokemon, type]);
+  }, [submit, api, search, Pokemon, type1, type2]);
 
-  const themeClass: string = themeTypes[type as keyof Theme];
+  const themeClass: string[] = [
+    themeTypes[type1 as keyof Theme],
+    type2 ? themeTypes[type2 as keyof Theme] : "",
+  ];
 
   return (
     <div className="container flex flex-col justify-between items-center h-screen">
@@ -116,23 +125,32 @@ const PokemonData: React.FC = () => {
           </div>
         </form>
       </div>
-      {Pokemon && type ? (
-        <div className={classNames("pokemon", themeClass)}>
+      {Pokemon && type1 ? (
+        <div className={classNames("pokemon container p-4", themeClass[0])}>
           <h1>{Pokemon?.id}</h1>
           <h1>{Pokemon?.name}</h1>
           <h1>
-            Types: {Pokemon?.types?.map((type: any) => type.type.name + " ")}
+            Types:
+            <p className={classNames(themeClass[0])}>
+              {Pokemon.types[0].type.name}
+            </p>
+            {Pokemon.types[1] ? (
+              <p className={classNames(themeClass[1])}>
+                {Pokemon.types[1].type.name}
+              </p>
+            ) : (
+              ""
+            )}
           </h1>
           <img src={Pokemon?.sprites?.front_default} alt="pokemon" />
-          <img
+          {/* <img
             src={Pokemon?.sprites?.other?.home?.front_default}
             alt="pokemon"
-          />
+          /> */}
           <img
             src={Pokemon?.sprites?.other?.dream_world?.front_default}
             alt="pokemon"
           />
-          <img src={Pokemon?.sprites?.front_shiny} alt={Pokemon?.name} />
         </div>
       ) : (
         <div>
