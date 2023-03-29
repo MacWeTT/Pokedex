@@ -39,7 +39,7 @@ const PokemonData: React.FC = () => {
 
   useEffect(() => {
     if (submit && search !== null && search !== "") {
-      const dataAPI: string = `https://pokeapi.co/api/v2/pokemon/${search}`;
+      const dataAPI: string = `https://pokeapi.co/api/v2/pokemon/${search.toLowerCase()}`;
 
       fetch(dataAPI)
         .then((res) => res.json())
@@ -63,6 +63,8 @@ const PokemonData: React.FC = () => {
             timeout: 1500,
             message: `Fetching data for ${search}...`,
           });
+          console.log(Pokemon);
+          console.log(PokeStats);
         })
         .catch((err: any) => {
           console.error(err);
@@ -83,7 +85,7 @@ const PokemonData: React.FC = () => {
   ];
 
   return (
-    <div className="container flex flex-col justify-evenly items-center h-screen">
+    <div className="flex flex-col justify-evenly items-center h-screen w-screen">
       <div className="search-box fixed top-0 flex items-center justify-center pt-4">
         <div className="back-button pt-2 pr-4">
           <Link to="/">
@@ -140,13 +142,13 @@ const PokemonData: React.FC = () => {
         </form>
       </div>
       {Pokemon && type1 ? (
-        <div
-          className={classNames(
-            "pokemon container flex justify-between p-4",
-            themeClass[0]
-          )}
-        >
-          <div className="pokemon-sprite items-center container flex justify-center flex-col object-cover">
+        <div className="pokemon container flex flex-col md:flex-row justify-between items-center p-4">
+          <div
+            className={classNames(
+              "pokemon-sprite items-center container flex justify-center flex-col object-cover p-4",
+              themeClass[0]
+            )}
+          >
             {Pokemon?.sprites?.other?.dream_world?.front_default ? (
               <img
                 src={Pokemon?.sprites?.other?.dream_world?.front_default}
@@ -162,29 +164,62 @@ const PokemonData: React.FC = () => {
             )}
           </div>
           <div className="pokemon-data">
-            <p className="flex justify-between">
+            <span className="flex justify-between">
               <h1 className="bg-black text-white inline p-2 rounded-lg text-3xl my-2">
                 {Pokemon?.id}
               </h1>
               <h1 className="uppercase py-2 font-bold text-3xl">
                 {Pokemon?.name}
               </h1>
-            </p>
-            <h1 className="flex">
-              <p className={classNames("type-data", themeClass[0])}>
-                {Pokemon.types[0].type.name}
-              </p>
-              {Pokemon.types[1] ? (
-                <p className={classNames("type-data", themeClass[1])}>
-                  {Pokemon.types[1].type.name}
-                </p>
-              ) : (
-                ""
-              )}
+            </span>
+            <h1 className="flex justify-between">
+              <span>
+                <span className={classNames("type-data", themeClass[0])}>
+                  {Pokemon.types[0].type.name}
+                </span>
+                {Pokemon.types[1] ? (
+                  <span className={classNames("type-data", themeClass[1])}>
+                    {Pokemon.types[1].type.name}
+                  </span>
+                ) : (
+                  ""
+                )}
+              </span>
+              <span className="uppercase font-semibold">
+                {PokeStats?.generation.name}
+              </span>
             </h1>
             <p className="text-justify">
               {PokeStats?.flavor_text_entries[0]?.flavor_text}
             </p>
+            <table className="table-auto border-gray-700">
+              <tbody>
+                <tr>
+                  <th>Height</th>
+                  <td>{Pokemon.height}</td>
+                  <th>Weight</th>
+                  <td>{Pokemon.weight}</td>
+                </tr>
+                <tr>
+                  <th>Attack</th>
+                  <td>{Pokemon.stats[1]?.base_stat}</td>
+                  <th>Defense</th>
+                  <td>{Pokemon.stats[2]?.base_stat}</td>
+                </tr>
+                <tr>
+                  <th>Speed</th>
+                  <td>{Pokemon.stats[5]?.base_stat}</td>
+                  <th>Hitpoints</th>
+                  <td>{Pokemon.stats[0]?.base_stat}</td>
+                </tr>
+                <tr>
+                  <th>Special Attack</th>
+                  <td>{Pokemon.stats[3]?.base_stat}</td>
+                  <th>Special Defense</th>
+                  <td>{Pokemon.stats[4]?.base_stat}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       ) : (

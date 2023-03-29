@@ -8,25 +8,35 @@
   position: relative;
 }
 
+body {
+  background-color: gray;
+}
+
 .filter {
   @apply p-4 px-4 flex justify-between m-4 rounded-full font-semibold text-white hover:border-black hover:border-2 border-2 border-transparent transition-all duration-300;
 }
 
 .pokemon {
-  @apply h-full p-20;
+  @apply p-20;
 }
 
-/* 
 .pokemon-sprite {
-  width: 50vw;
-  height: 50vh;
-} */
+  width: 40vw;
+  height: 40vh;
+}
 .pokemon-data {
   max-width: 50%;
 }
 
 .type-data {
   @apply p-1 mr-2 uppercase border-black border-2 font-bold rounded-md;
+}
+
+tr,
+td,
+th,
+table {
+  @apply border-gray-700 border-2 p-2;
 }
 
 /* Pokemon Themes */

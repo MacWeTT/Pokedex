@@ -18,7 +18,7 @@ const Search: React.FC = () => {
   };
   function handleSubmit(e: SyntheticEvent) {
     e.preventDefault();
-    const dataAPI: string = `https://pokeapi.co/api/v2/pokemon/${search}`;
+    const dataAPI: string = `https://pokeapi.co/api/v2/pokemon/${search.toLowerCase()}`;
 
     fetch(dataAPI)
       .then((res) => res.json())
