@@ -10,8 +10,12 @@ const PokemonData: React.FC = () => {
   const location = useLocation();
   const PokemonReq = location.state;
 
-  const [Pokemon, setPokemon] = useState<Pokemon | null>(PokemonReq as Pokemon);
-  const [PokeStats, setPokeStats] = useState<PokeStats | null>(null);
+  const [Pokemon, setPokemon] = useState<Pokemon | null>(
+    PokemonReq?.PokemonData as Pokemon
+  );
+  const [PokeStats, setPokeStats] = useState<PokeStats | null>(
+    PokemonReq?.PokemonStats as PokeStats
+  );
 
   const [search, setSearch] = useState<string | null>(null);
   const [searchID, setSearchID] = useState<string | null>(
@@ -79,19 +83,8 @@ const PokemonData: React.FC = () => {
           console.error(err);
         });
       setSubmit(false);
-      console.log(Pokemon);
     }
-    fetch(dataAPI)
-      .then((res) => res.json())
-      .then((data) => {
-        setPokeStats(data);
-        console.log(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
     setSubmit(false);
-    console.log(Pokemon);
   }, [submit, statsAPI, dataAPI, search, Pokemon, PokeStats, type1, type2]);
 
   const themeClass: string[] = [
