@@ -1,7 +1,7 @@
 import React, { SyntheticEvent, useState, useEffect, useCallback } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { Pokemon } from "../Components/models/Pokemon";
-import { PokeStats } from "../Components/models/PokeStats";
+import { Pokemon } from "../models/Pokemon";
+import { PokeStats } from "../models/PokeStats";
 import classNames from "classnames";
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
