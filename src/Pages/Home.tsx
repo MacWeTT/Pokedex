@@ -46,7 +46,7 @@ const Home: React.FC = () => {
       </div>
 
       {error ? (
-        <p>Oh No!</p>
+        <h1>An error occured... Check Query...</h1>
       ) : isLoading ? (
         <p>Loading...</p>
       ) : Pokemon ? (
