@@ -276,7 +276,7 @@ const PokemonData: React.FC = () => {
                   </li>
                 ))}
               </ul>
-              <div className="flex justify-between">
+              <div className="flex justify-center align-center">
                 {tabContents[tab].content}
               </div>
             </div>
