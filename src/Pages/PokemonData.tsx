@@ -27,6 +27,76 @@ const PokemonData: React.FC = () => {
     Pokemon ? Pokemon?.types[1]?.type?.name : ""
   );
 
+  const [tab, setTab] = useState(0);
+
+  const tabs = ["Info", "Stats", "About"];
+  // const [fill, setFill] = useState(50);
+
+  // let stat: number = 0;
+  // switch (fill) {
+  //   case 0:
+  // }
+
+  // const barStyle = {
+  //   width: "10rem",
+  //   height: "1rem",
+  //   background: `linear-gradient(to right, #4CAF50 ${fill}%, transparent ${fill}%)`,
+  //   border: "1px solid #4CAF50",
+  //   border_radius: "0.5rem",
+  // };
+
+  const tabContents = [
+    {
+      name: "Info",
+      content: (
+        <p className="text-justify mt-4">
+          {PokeStats?.flavor_text_entries[0]?.flavor_text}
+        </p>
+      ),
+    },
+    {
+      name: "Stats",
+      content: (
+        <table className="table-auto border-gray-700 mt-4">
+          <tbody>
+            <tr>
+              <th>Height</th>
+              <td>{Pokemon?.height}</td>
+              <th>Weight</th>
+              <td>{Pokemon?.weight}</td>
+            </tr>
+            <tr>
+              <th>Attack</th>
+              <td>{Pokemon?.stats[1]?.base_stat}</td>
+              <th>Defense</th>
+              <td>{Pokemon?.stats[2]?.base_stat}</td>
+            </tr>
+            <tr>
+              <th>Speed</th>
+              <td>{Pokemon?.stats[5]?.base_stat}</td>
+              <th>Hitpoints</th>
+              <td>{Pokemon?.stats[0]?.base_stat}</td>
+            </tr>
+            <tr>
+              <th>Special Attack</th>
+              <td>{Pokemon?.stats[3]?.base_stat}</td>
+              <th>Special Defense</th>
+              <td>{Pokemon?.stats[4]?.base_stat}</td>
+            </tr>
+          </tbody>
+        </table>
+      ),
+    },
+    {
+      name: "About",
+      content: (
+        <div className="stats-data w-60 flex items-center px-2 justify-between">
+          <h1>No About Data Yet</h1>
+        </div>
+      ),
+    },
+  ];
+
   const handleChange = (e: SyntheticEvent) => {
     const target = e.target as HTMLInputElement;
     setSearch(target.value);
@@ -85,8 +155,8 @@ const PokemonData: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col justify-evenly items-center h-screen w-screen">
-      <div className="search-box fixed top-0 flex items-center justify-center pt-4">
+    <div className="flex flex-col justify-evenly items-center">
+      <div className="search-box flex items-center justify-center py-4">
         <div className="back-button pt-2 pr-4">
           <Link to="/">
             <button className="text-black hover:text-gray-500 transition-all duration-300">
@@ -142,28 +212,30 @@ const PokemonData: React.FC = () => {
         </form>
       </div>
       {Pokemon && type1 ? (
-        <div className="pokemon container flex flex-col md:flex-row justify-between items-center p-4">
-          <div
-            className={classNames(
-              "pokemon-sprite items-center container flex justify-center flex-col object-cover p-4",
-              themeClass[0]
-            )}
-          >
-            {Pokemon?.sprites?.other?.dream_world?.front_default ? (
-              <img
-                src={Pokemon?.sprites?.other?.dream_world?.front_default}
-                alt="pokemon"
-                className="object-contain items-center w-full h-full"
-              />
-            ) : (
-              <img
-                src={Pokemon?.sprites?.other?.home?.front_default}
-                alt="pokemon"
-                className="object-contain items-center w-full h-full"
-              />
-            )}
+        <div className="pokemon lg:p-20 container grid grid-cols-1 lg:grid-cols-2 ">
+          <div className="flex justify-center items-center">
+            <div
+              className={classNames(
+                "pokemon-sprite w-72 h-72 items-center container flex justify-center p-4",
+                themeClass[0]
+              )}
+            >
+              {Pokemon?.sprites?.other?.dream_world?.front_default ? (
+                <img
+                  src={Pokemon?.sprites?.other?.dream_world?.front_default}
+                  alt="pokemon"
+                  className="object-contain items-center w-full h-full"
+                />
+              ) : (
+                <img
+                  src={Pokemon?.sprites?.other?.home?.front_default}
+                  alt="pokemon"
+                  className="object-contain items-center w-full h-full"
+                />
+              )}
+            </div>
           </div>
-          <div className="pokemon-data">
+          <div className="pokemon-data p-4 m-4">
             <span className="flex justify-between">
               <h1 className="bg-black text-white inline p-2 rounded-lg text-3xl my-2">
                 {Pokemon?.id}
@@ -172,7 +244,7 @@ const PokemonData: React.FC = () => {
                 {Pokemon?.name}
               </h1>
             </span>
-            <h1 className="flex justify-between">
+            <h1 className="flex justify-between my-2">
               <span>
                 <span className={classNames("type-data", themeClass[0])}>
                   {Pokemon.types[0].type.name}
@@ -189,37 +261,25 @@ const PokemonData: React.FC = () => {
                 {PokeStats?.generation.name}
               </span>
             </h1>
-            <p className="text-justify">
-              {PokeStats?.flavor_text_entries[0]?.flavor_text}
-            </p>
-            <table className="table-auto border-gray-700">
-              <tbody>
-                <tr>
-                  <th>Height</th>
-                  <td>{Pokemon.height}</td>
-                  <th>Weight</th>
-                  <td>{Pokemon.weight}</td>
-                </tr>
-                <tr>
-                  <th>Attack</th>
-                  <td>{Pokemon.stats[1]?.base_stat}</td>
-                  <th>Defense</th>
-                  <td>{Pokemon.stats[2]?.base_stat}</td>
-                </tr>
-                <tr>
-                  <th>Speed</th>
-                  <td>{Pokemon.stats[5]?.base_stat}</td>
-                  <th>Hitpoints</th>
-                  <td>{Pokemon.stats[0]?.base_stat}</td>
-                </tr>
-                <tr>
-                  <th>Special Attack</th>
-                  <td>{Pokemon.stats[3]?.base_stat}</td>
-                  <th>Special Defense</th>
-                  <td>{Pokemon.stats[4]?.base_stat}</td>
-                </tr>
-              </tbody>
-            </table>
+            <div>
+              <ul className="grid grid-cols-3 cursor-pointer">
+                {tabs.map((tab, index) => (
+                  <li
+                    key={index}
+                    onClick={() => setTab(index)}
+                    className={classNames(
+                      "p-2 border-2 border-black text-center hover:font-semibold",
+                      themeClass[0]
+                    )}
+                  >
+                    {tab}
+                  </li>
+                ))}
+              </ul>
+              <div className="flex justify-between">
+                {tabContents[tab].content}
+              </div>
+            </div>
           </div>
         </div>
       ) : (

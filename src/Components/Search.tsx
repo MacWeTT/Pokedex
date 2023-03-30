@@ -7,6 +7,7 @@ import "izitoast/dist/css/iziToast.min.css";
 
 const Search: React.FC = () => {
   const [search, setSearch] = useState("");
+
   const navigate = useNavigate();
 
   let PokemonData: Pokemon;
