@@ -8,16 +8,20 @@
   position: relative;
 }
 
-body {
-  background-color: gray;
-}
-
 .filter {
   @apply p-4 px-4 flex justify-between m-4 rounded-full font-semibold text-white hover:border-black hover:border-2 border-2 border-transparent transition-all duration-300;
 }
 
 .pokemon-data {
-  min-width: 19rem;
+  min-height: 25rem;
+}
+
+.tabs > li:first-child {
+  @apply rounded-l-lg;
+}
+
+.tabs > li:last-child {
+  @apply rounded-r-lg;
 }
 
 .type-data {

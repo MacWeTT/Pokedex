@@ -129,7 +129,7 @@ const PokemonData: React.FC = () => {
           setPokeStats(data as PokeStats);
           iziToast.success({
             title: "Success",
-            position: "topRight",
+            position: "topLeft",
             timeout: 1500,
             message: `Fetching data for ${search}...`,
           });
@@ -140,7 +140,7 @@ const PokemonData: React.FC = () => {
           console.error(err);
           iziToast.error({
             title: "Error",
-            position: "topRight",
+            position: "topLeft",
             timeout: 1500,
             message: `${search} not found..Check query..`,
           });
@@ -155,163 +155,173 @@ const PokemonData: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col justify-evenly items-center">
-      <div className="search-box flex items-center justify-center py-4">
-        <div className="back-button pt-2 pr-4">
-          <Link to="/">
-            <button className="text-black hover:text-gray-500 transition-all duration-300">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 19.5L8.25 12l7.5-7.5"
-                />
-              </svg>
-            </button>
-          </Link>
-        </div>
-        <form
-          method="get"
-          onSubmit={handleSubmit}
-          className="flex items-center justify-center"
-        >
-          <input
-            type="text"
-            name="search"
-            id="pokemon"
-            onChange={handleChange}
-            placeholder="Search.."
-            className="px-5 p-2 border rounded-full outline-none relative"
-          />
-          <div className="search-icon px-2 text-black hover:text-gray-500 transition-all duration-300 block">
-            <button type="submit">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-                onClick={handleSubmit}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                />
-              </svg>
-            </button>
+    <div className="relative h-screen flex flex-col justify-evenly">
+      <div className="search-box absolute top-0 flex items-center justify-between w-screen">
+        <div className="md:visible text-3xl pl-4 ">Pokedex</div>
+        <div className="flex items-center justify-center">
+          <div className="back-button pt-1 pr-1">
+            <Link to="/">
+              <button className="text-black hover:text-gray-500 transition-all duration-300">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 19.5L8.25 12l7.5-7.5"
+                  />
+                </svg>
+              </button>
+            </Link>
           </div>
-        </form>
-      </div>
-      {Pokemon && type1 ? (
-        <div className="pokemon lg:p-20 container grid grid-cols-1 lg:grid-cols-2 ">
-          <div className="flex justify-center items-center">
-            <div
-              className={classNames(
-                "pokemon-sprite w-72 h-72 items-center container flex justify-center p-4",
-                themeClass[0]
-              )}
+          <div className="flex items-center bg-gray-100 rounded-md px-2 py-2 my-4 mr-4 mx-2">
+            <form
+              method="get"
+              onSubmit={handleSubmit}
+              className="flex items-center justify-center"
             >
-              {Pokemon?.sprites?.other?.dream_world?.front_default ? (
-                <img
-                  src={Pokemon?.sprites?.other?.dream_world?.front_default}
-                  alt="pokemon"
-                  className="object-contain items-center w-full h-full"
+              <div className="search-icon px-2 text-black hover:text-gray-500 transition-all duration-300 flex items-center">
+                <input
+                  type="text"
+                  name="search"
+                  id="pokemon"
+                  onChange={handleChange}
+                  placeholder="Enter Name or ID.."
+                  className="flex-1 bg-gray-100 focus:outline-none items-center"
                 />
-              ) : (
-                <img
-                  src={Pokemon?.sprites?.other?.home?.front_default}
-                  alt="pokemon"
-                  className="object-contain items-center w-full h-full"
-                />
-              )}
-            </div>
-          </div>
-          <div className="pokemon-data p-4 m-4">
-            <span className="flex justify-between">
-              <h1 className="bg-black text-white inline p-2 rounded-lg text-3xl my-2">
-                {Pokemon?.id}
-              </h1>
-              <h1 className="uppercase py-2 font-bold text-3xl">
-                {Pokemon?.name}
-              </h1>
-            </span>
-            <h1 className="flex justify-between my-2">
-              <span>
-                <span className={classNames("type-data", themeClass[0])}>
-                  {Pokemon.types[0].type.name}
-                </span>
-                {Pokemon.types[1] ? (
-                  <span className={classNames("type-data", themeClass[1])}>
-                    {Pokemon.types[1].type.name}
-                  </span>
-                ) : (
-                  ""
-                )}
-              </span>
-              <span className="uppercase font-semibold">
-                {PokeStats?.generation.name}
-              </span>
-            </h1>
-            <div>
-              <ul className="grid grid-cols-3 cursor-pointer">
-                {tabs.map((tab, index) => (
-                  <li
-                    key={index}
-                    onClick={() => setTab(index)}
-                    className={classNames(
-                      "p-2 border-2 border-black text-center hover:font-semibold",
-                      themeClass[0]
-                    )}
+                <button
+                  type="submit"
+                  className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                    onClick={handleSubmit}
                   >
-                    {tab}
-                  </li>
-                ))}
-              </ul>
-              <div className="flex justify-center align-center">
-                {tabContents[tab].content}
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col justify-evenly items-center">
+        {Pokemon && type1 ? (
+          <div className="pokemon lg:p-20 container grid grid-cols-1 lg:grid-cols-2 ">
+            <div className="flex justify-center items-center">
+              <div
+                className={classNames(
+                  "pokemon-sprite w-72 h-72 items-center container flex justify-center p-4",
+                  themeClass[0]
+                )}
+              >
+                {Pokemon?.sprites?.other?.dream_world?.front_default ? (
+                  <img
+                    src={Pokemon?.sprites?.other?.dream_world?.front_default}
+                    alt="pokemon"
+                    className="object-contain items-center w-full h-full"
+                  />
+                ) : (
+                  <img
+                    src={Pokemon?.sprites?.other?.home?.front_default}
+                    alt="pokemon"
+                    className="object-contain items-center w-full h-full"
+                  />
+                )}
+              </div>
+            </div>
+            <div className="pokemon-data p-4 m-4">
+              <span className="flex justify-between">
+                <h1 className="bg-black text-white inline p-2 rounded-lg text-3xl my-2">
+                  {Pokemon?.id}
+                </h1>
+                <h1 className="uppercase py-2 font-bold text-3xl">
+                  {Pokemon?.name}
+                </h1>
+              </span>
+              <h1 className="flex justify-between my-2">
+                <span>
+                  <span className={classNames("type-data", themeClass[0])}>
+                    {Pokemon.types[0].type.name}
+                  </span>
+                  {Pokemon.types[1] ? (
+                    <span className={classNames("type-data", themeClass[1])}>
+                      {Pokemon.types[1].type.name}
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </span>
+                <span className="uppercase font-semibold">
+                  {PokeStats?.generation.name}
+                </span>
+              </h1>
+              <div>
+                <ul className="tabs grid grid-cols-3 cursor-pointer">
+                  {tabs.map((tab, index) => (
+                    <li
+                      key={index}
+                      onClick={() => setTab(index)}
+                      className={classNames(
+                        "p-2 border-2 border-black text-center hover:font-semibold",
+                        themeClass[0]
+                      )}
+                    >
+                      {tab}
+                    </li>
+                  ))}
+                </ul>
+                <div className="flex justify-center align-center">
+                  {tabContents[tab].content}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      ) : (
-        <div className="container flex flex-col justify-center items-center">
-          <h1 className="text-center text-4xl">
-            You haven't fetched any data!
-          </h1>
-          <br />
-          <Link
-            to="/"
-            className="font-medium flex items-between text-center text-2xl"
-          >
-            <p className="flex items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 19.5L8.25 12l7.5-7.5"
-                />
-              </svg>
-            </p>
-            <p className="italic hover:font-bold">Go Back</p>
-          </Link>
-        </div>
-      )}
+        ) : (
+          <div className="container flex flex-col justify-center items-center">
+            <h1 className="text-center text-4xl">
+              You haven't fetched any data!
+            </h1>
+            <br />
+            <Link
+              to="/"
+              className="font-medium flex items-between text-center text-2xl"
+            >
+              <p className="flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15.75 19.5L8.25 12l7.5-7.5"
+                  />
+                </svg>
+              </p>
+              <p className="italic hover:font-bold">Go Back</p>
+            </Link>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
