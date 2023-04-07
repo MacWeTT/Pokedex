@@ -1,7 +1,7 @@
 import React, { SyntheticEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pokemon } from "../models/Pokemon";
-import { PokeStats } from "../models/PokeStats";
+import { Pokemon } from "../../models/Pokemon";
+import { PokeStats } from "../../models/PokeStats";
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
@@ -33,8 +33,8 @@ const Search: React.FC = () => {
         PokemonStats = data as PokeStats;
         iziToast.success({
           title: "Success",
-          position: "topRight",
-          timeout: 3000,
+          position: "topCenter",
+          timeout: 1000,
           message: `Fetching data for ${search}...`,
         });
         setTimeout(() => {
@@ -42,15 +42,15 @@ const Search: React.FC = () => {
             replace: false,
             state: { PokemonData, PokemonStats },
           });
-        }, 3000);
+        }, 1500);
       })
       .catch((err: any) => {
         console.error(err);
         setSearch("");
         iziToast.error({
           title: "Error",
-          position: "topRight",
-          timeout: 3000,
+          position: "topCenter",
+          timeout: 1000,
           message: `${search} not found..Check query..`,
         });
       });

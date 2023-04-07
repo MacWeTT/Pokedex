@@ -1,7 +1,7 @@
 import React, { SyntheticEvent, useState, useEffect, useCallback } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { Pokemon } from "../models/Pokemon";
-import { PokeStats } from "../models/PokeStats";
+import { Pokemon } from "../../models/Pokemon";
+import { PokeStats } from "../../models/PokeStats";
 import classNames from "classnames";
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
@@ -30,20 +30,6 @@ const PokemonData: React.FC = () => {
   const [tab, setTab] = useState(0);
 
   const tabs = ["Info", "Stats", "About"];
-  // const [fill, setFill] = useState(50);
-
-  // let stat: number = 0;
-  // switch (fill) {
-  //   case 0:
-  // }
-
-  // const barStyle = {
-  //   width: "10rem",
-  //   height: "1rem",
-  //   background: `linear-gradient(to right, #4CAF50 ${fill}%, transparent ${fill}%)`,
-  //   border: "1px solid #4CAF50",
-  //   border_radius: "0.5rem",
-  // };
 
   const tabContents = [
     {
@@ -155,9 +141,9 @@ const PokemonData: React.FC = () => {
   ];
 
   return (
-    <div className="relative h-screen flex flex-col justify-evenly">
-      <div className="search-box absolute top-0 flex items-center justify-between w-screen">
-        <div className="md:visible text-3xl pl-4 ">Pokedex</div>
+    <div className="h-screen flex flex-col justify-evenly lg:my-0 my-20">
+      <div className="search-box absolute top-0 flex items-center justify-center md:justify-between w-screen">
+        <div className="text-3xl pl-4 nav-heading">Pokedex</div>
         <div className="flex items-center justify-center">
           <div className="back-button pt-1 pr-1">
             <Link to="/">
@@ -221,7 +207,7 @@ const PokemonData: React.FC = () => {
       </div>
       <div className="flex flex-col justify-evenly items-center">
         {Pokemon && type1 ? (
-          <div className="pokemon lg:p-20 container grid grid-cols-1 lg:grid-cols-2 ">
+          <div className="pokemon lg:p-20 container flex flex-col lg:flex-row justify-evenly ">
             <div className="flex justify-center items-center">
               <div
                 className={classNames(
