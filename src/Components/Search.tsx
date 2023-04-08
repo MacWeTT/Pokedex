@@ -37,6 +37,7 @@ const Search: React.FC = () => {
           timeout: 3000,
           message: `Fetching data for ${search}...`,
         });
+        console.log(PokemonStats);
         setTimeout(() => {
           navigate("/pokemon", {
             replace: false,
@@ -56,16 +57,16 @@ const Search: React.FC = () => {
       });
   }
   return (
-    <div className="search flex justify-between flex-col p-4 bg-red-500">
+    <div className="search h-screen relative flex flex-col p-4 bg-red-500">
       <nav>
-        <h2 className="text-white text-2xl">Pokedex</h2>
+        <h2 className="text-white text-3xl">Pokedex</h2>
       </nav>
-      <div className="search-container flex flex-col justify-center">
-        <h1 className="text-white text-2xl font-semibold text-center">
+      <div className="search-container absolute flex flex-col justify-center">
+        <h1 className="text-white text-4xl font-semibold text-center search-head">
           Find your favourite Pokemon
         </h1>
         <div className="flex items-center justify-center">
-          <div className="flex items-center bg-gray-100 rounded-md px-2 py-2 my-4 mr-4 mx-2">
+          <div className="flex items-center bg-gray-100 rounded-md p-3 my-4 mr-4 mx-2">
             <form
               method="get"
               onSubmit={handleSubmit}
@@ -110,33 +111,3 @@ const Search: React.FC = () => {
 };
 
 export default Search;
-
-// try {
-//   const dataResponse = await fetch(dataAPI);
-//   const data: Pokemon = await dataResponse.json().then((data) => data.id);
-
-//   const statsResponse = await fetch(statsAPI);
-//   const stats = await statsResponse.json();
-
-//   console.log("Response status: ", dataResponse.status);
-//   if (dataResponse.status === 200) {
-//     iziToast.success({
-//       title: "Success",
-//       position: "topRight",
-//       timeout: 3000,
-//       message: `Fetching data for ${search}...`,
-//     });
-//     setTimeout(() => {
-//       navigate("/pokemon", { replace: false, state: { data, stats } });
-//     }, 3000);
-//   }
-// } catch (error: any) {
-//   console.log(error);
-//   setSearch("");
-//   iziToast.error({
-//     title: "Error",
-//     position: "topRight",
-//     timeout: 3000,
-//     message: `${search} not found..Check query..`,
-//   });
-// }

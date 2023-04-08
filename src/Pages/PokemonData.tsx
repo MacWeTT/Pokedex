@@ -13,13 +13,11 @@ import {
   TabPanel,
   Progress,
   Table,
-  Thead,
   Tbody,
   Tfoot,
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
 } from "@chakra-ui/react";
 
@@ -86,13 +84,6 @@ const PokemonData: React.FC = () => {
             timeout: 1500,
             message: `Fetching data for ${search}...`,
           });
-          // if (PokeStats?.flavor_text_entries) {
-          //   flavourTextEntries = PokeStats?.flavor_text_entries.filter(
-          //     (entry: any) => {
-          //       return entry.language.name === "en";
-          //     }
-          //   );
-          // }
           console.log(Pokemon);
           console.log(PokeStats);
         })
@@ -186,199 +177,197 @@ const PokemonData: React.FC = () => {
           </div>
         </div>
       </div>
-      <div>
-        {Pokemon && type1 ? (
-          <>
+      {Pokemon && type1 ? (
+        <>
+          <div
+            className={classNames(
+              "flex justify-center items-center",
+              themeClass[0]
+            )}
+          >
             <div
               className={classNames(
-                "flex justify-center items-center",
+                "pokemon-sprite w-72 h-72 items-center container flex justify-center p-4",
                 themeClass[0]
               )}
             >
-              <div
-                className={classNames(
-                  "pokemon-sprite w-72 h-72 items-center container flex justify-center p-4",
-                  themeClass[0]
-                )}
-              >
-                {Pokemon?.sprites?.other?.dream_world?.front_default ? (
-                  <img
-                    src={Pokemon?.sprites?.other?.dream_world?.front_default}
-                    alt="pokemon"
-                    className="object-contain items-center w-full h-full"
-                  />
-                ) : (
-                  <img
-                    src={Pokemon?.sprites?.other?.home?.front_default}
-                    alt="pokemon"
-                    className="object-contain items-center w-full h-full"
-                  />
-                )}
-              </div>
+              {Pokemon?.sprites?.other?.dream_world?.front_default ? (
+                <img
+                  src={Pokemon?.sprites?.other?.dream_world?.front_default}
+                  alt="pokemon"
+                  className="object-contain items-center w-full h-full"
+                />
+              ) : (
+                <img
+                  src={Pokemon?.sprites?.other?.home?.front_default}
+                  alt="pokemon"
+                  className="object-contain items-center w-full h-full"
+                />
+              )}
             </div>
-            <div className="pokemon-data p-4 m-4">
-              <span className="flex justify-between">
-                <h1 className="bg-black text-white inline p-2 rounded-lg text-3xl my-2 id-tag text-center">
-                  {Pokemon?.id}
-                </h1>
-                <h1 className="uppercase py-2 font-bold text-3xl">
-                  {Pokemon?.name}
-                </h1>
-              </span>
-              <h1 className="flex justify-between my-2">
-                <span>
-                  <span className={classNames("type-data", themeClass[0])}>
-                    {Pokemon.types[0].type.name}
-                  </span>
-                  {Pokemon.types[1] ? (
-                    <span className={classNames("type-data", themeClass[1])}>
-                      {Pokemon.types[1].type.name}
-                    </span>
-                  ) : (
-                    ""
-                  )}
-                </span>
-                <span className="uppercase font-semibold">
-                  {PokeStats?.generation.name}
-                </span>
-              </h1>
-              <Tabs defaultIndex={0} colorScheme={themeClass[0]}>
-                <TabList>
-                  <Tab>Info</Tab>
-                  <Tab>Stats</Tab>
-                  <Tab>About</Tab>
-                </TabList>
-                <TabPanels>
-                  <TabPanel>
-                    <h2 className="text-2xl mb-2">Entry</h2>
-                    <p className="text-justify">
-                      {PokeStats?.flavor_text_entries[5].flavor_text}
-                    </p>
-                    <h2 className="text-2xl mb-2">Abilities</h2>
-                    <span className="flex">
-                      {Pokemon.abilities?.map((ability, index) => {
-                        return (
-                          <p
-                            className="uppercase mr-2 px-2 py-1 font-semibold border-2 border-gray-700 rounded-sm"
-                            key={index}
-                          >
-                            {ability.ability.name}
-                          </p>
-                        );
-                      })}
-                    </span>
-                  </TabPanel>
-                  <TabPanel>
-                    <h3 className="flex justify-between my-2">
-                      <p>Attack</p>
-                      <p>{Pokemon?.stats[1]?.base_stat}</p>
-                    </h3>
-                    <Progress value={Pokemon?.stats[1]?.base_stat} />
-                    <h3 className="flex justify-between my-2">
-                      <p>Defense</p>
-                      <p>{Pokemon?.stats[2]?.base_stat}</p>
-                    </h3>
-                    <Progress value={Pokemon?.stats[2]?.base_stat} />
-                    <h3 className="flex justify-between my-2">
-                      <p>Speed</p>
-                      <p>{Pokemon?.stats[5]?.base_stat}</p>
-                    </h3>
-                    <Progress value={Pokemon?.stats[5]?.base_stat} />
-                    <h3 className="flex justify-between my-2">
-                      <p>Hitpoints</p>
-                      <p>{Pokemon?.stats[0]?.base_stat}</p>
-                    </h3>
-                    <Progress value={Pokemon?.stats[0]?.base_stat} />
-                    <h3 className="flex justify-between my-2">
-                      <p>Special Attack</p>
-                      <p>{Pokemon?.stats[3]?.base_stat}</p>
-                    </h3>
-                    <Progress value={Pokemon?.stats[3]?.base_stat} />
-                    <h3 className="flex justify-between my-2">
-                      <p>Special Defense</p>
-                      <p>{Pokemon?.stats[4]?.base_stat}</p>
-                    </h3>
-                    <Progress value={Pokemon?.stats[4]?.base_stat} />
-                  </TabPanel>
-                  <TabPanel>
-                    <TableContainer>
-                      <Table variant="simple">
-                        <Tbody>
-                          <Tr>
-                            <Th>Height</Th>
-                            <Td>{Pokemon?.height}</Td>
-                            <Th>Weight</Th>
-                            <Td>{Pokemon?.weight}</Td>
-                          </Tr>
-                          <Tr>
-                            <Th>Base Happiness</Th>
-                            <Td>{PokeStats?.base_happiness}</Td>
-                            <Th>Base Experience</Th>
-                            <Td>{Pokemon?.base_experience}</Td>
-                          </Tr>
-                          <Tr>
-                            <Th>Height</Th>
-                            <Td>{Pokemon?.height}</Td>
-                            <Th>Weight</Th>
-                            <Td>{Pokemon?.weight}</Td>
-                          </Tr>
-                          <Tr>
-                            <Th>Gender Differences</Th>
-                            <Td>
-                              {PokeStats?.has_gender_differences === true
-                                ? "Yes"
-                                : "No"}
-                            </Td>
-                            <Th>Hatch Counter</Th>
-                            <Td>{PokeStats?.hatch_counter}</Td>
-                          </Tr>
-                        </Tbody>
-                        <Tfoot>
-                          <Tr>
-                            <Th>Growth Rate</Th>
-                            <Td>{PokeStats?.growth_rate.name}</Td>
-                            <Th>Habitat</Th>
-                            <Td>{PokeStats?.habitat.name}</Td>
-                          </Tr>
-                        </Tfoot>
-                      </Table>
-                    </TableContainer>
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
-            </div>
-          </>
-        ) : (
-          <div className="container flex flex-col justify-center items-center">
-            <h1 className="text-center text-4xl">
-              You haven't fetched any data!
-            </h1>
-            <br />
-            <Link
-              to="/"
-              className="font-medium flex items-between text-center text-2xl"
-            >
-              <p className="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15.75 19.5L8.25 12l7.5-7.5"
-                  />
-                </svg>
-              </p>
-              <p className="italic hover:font-bold">Go Back</p>
-            </Link>
           </div>
-        )}
-      </div>
+          <div className="pokemon-data p-4 m-4">
+            <span className="flex justify-between">
+              <h1 className="bg-black text-white inline p-2 rounded-lg text-3xl my-2 id-tag text-center">
+                {Pokemon?.id}
+              </h1>
+              <h1 className="uppercase py-2 font-bold text-3xl">
+                {Pokemon?.name}
+              </h1>
+            </span>
+            <h1 className="flex justify-between my-2">
+              <span>
+                <span className={classNames("type-data", themeClass[0])}>
+                  {Pokemon.types[0].type.name}
+                </span>
+                {Pokemon.types[1] ? (
+                  <span className={classNames("type-data", themeClass[1])}>
+                    {Pokemon.types[1].type.name}
+                  </span>
+                ) : (
+                  ""
+                )}
+              </span>
+              <span className="uppercase font-semibold">
+                {PokeStats?.generation.name}
+              </span>
+            </h1>
+            <Tabs defaultIndex={0} colorScheme={themeClass[0]}>
+              <TabList>
+                <Tab>Info</Tab>
+                <Tab>Stats</Tab>
+                <Tab>About</Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel>
+                  <h2 className="text-2xl mb-2">Entry</h2>
+                  <p className="text-justify">
+                    {PokeStats?.flavor_text_entries[5].flavor_text}
+                  </p>
+                  <h2 className="text-2xl mb-2">Abilities</h2>
+                  <span className="flex">
+                    {Pokemon.abilities?.map((ability, index) => {
+                      return (
+                        <p
+                          className="uppercase mr-2 px-2 py-1 font-semibold border-2 border-gray-700 rounded-sm"
+                          key={index}
+                        >
+                          {ability.ability.name}
+                        </p>
+                      );
+                    })}
+                  </span>
+                </TabPanel>
+                <TabPanel>
+                  <h3 className="flex justify-between my-2">
+                    <p>Attack</p>
+                    <p>{Pokemon?.stats[1]?.base_stat}</p>
+                  </h3>
+                  <Progress value={Pokemon?.stats[1]?.base_stat} />
+                  <h3 className="flex justify-between my-2">
+                    <p>Defense</p>
+                    <p>{Pokemon?.stats[2]?.base_stat}</p>
+                  </h3>
+                  <Progress value={Pokemon?.stats[2]?.base_stat} />
+                  <h3 className="flex justify-between my-2">
+                    <p>Speed</p>
+                    <p>{Pokemon?.stats[5]?.base_stat}</p>
+                  </h3>
+                  <Progress value={Pokemon?.stats[5]?.base_stat} />
+                  <h3 className="flex justify-between my-2">
+                    <p>Hitpoints</p>
+                    <p>{Pokemon?.stats[0]?.base_stat}</p>
+                  </h3>
+                  <Progress value={Pokemon?.stats[0]?.base_stat} />
+                  <h3 className="flex justify-between my-2">
+                    <p>Special Attack</p>
+                    <p>{Pokemon?.stats[3]?.base_stat}</p>
+                  </h3>
+                  <Progress value={Pokemon?.stats[3]?.base_stat} />
+                  <h3 className="flex justify-between my-2">
+                    <p>Special Defense</p>
+                    <p>{Pokemon?.stats[4]?.base_stat}</p>
+                  </h3>
+                  <Progress value={Pokemon?.stats[4]?.base_stat} />
+                </TabPanel>
+                <TabPanel>
+                  <TableContainer>
+                    <Table variant="simple">
+                      <Tbody>
+                        <Tr>
+                          <Th>Height</Th>
+                          <Td>{Pokemon?.height}</Td>
+                          <Th>Weight</Th>
+                          <Td>{Pokemon?.weight}</Td>
+                        </Tr>
+                        <Tr>
+                          <Th>Base Happiness</Th>
+                          <Td>{PokeStats?.base_happiness}</Td>
+                          <Th>Base Experience</Th>
+                          <Td>{Pokemon?.base_experience}</Td>
+                        </Tr>
+                        <Tr>
+                          <Th>Height</Th>
+                          <Td>{Pokemon?.height}</Td>
+                          <Th>Weight</Th>
+                          <Td>{Pokemon?.weight}</Td>
+                        </Tr>
+                        <Tr>
+                          <Th>Gender Differences</Th>
+                          <Td>
+                            {PokeStats?.has_gender_differences === true
+                              ? "Yes"
+                              : "No"}
+                          </Td>
+                          <Th>Hatch Counter</Th>
+                          <Td>{PokeStats?.hatch_counter}</Td>
+                        </Tr>
+                      </Tbody>
+                      <Tfoot>
+                        <Tr>
+                          <Th>Growth Rate</Th>
+                          <Td>{PokeStats?.growth_rate.name}</Td>
+                          <Th>Habitat</Th>
+                          <Td>{PokeStats?.habitat?.name ?? "None"}</Td>
+                        </Tr>
+                      </Tfoot>
+                    </Table>
+                  </TableContainer>
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
+          </div>
+        </>
+      ) : (
+        <div className="container flex flex-col justify-center items-center">
+          <h1 className="text-center text-4xl">
+            You haven't fetched any data!
+          </h1>
+          <br />
+          <Link
+            to="/"
+            className="font-medium flex items-between text-center text-2xl"
+          >
+            <p className="flex items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15.75 19.5L8.25 12l7.5-7.5"
+                />
+              </svg>
+            </p>
+            <p className="italic hover:font-bold">Go Back</p>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
