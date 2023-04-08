@@ -1,11 +1,11 @@
 import React from "react";
-import Search from "../Components/Search";
+import Landing from "../Components/Landing";
 import Filters from "../Components/Filters";
 
 const Home: React.FC = () => {
   return (
     <div>
-      <Search />
+      <Landing />
       <Filters />
     </div>
   );

@@ -1,15 +1,38 @@
+//React Libraries Import
 import React, { SyntheticEvent, useState, useEffect, useCallback } from "react";
-import { useLocation, Link } from "react-router-dom";
-import { Pokemon } from "../models/Pokemon";
-import { PokeStats } from "../models/PokeStats";
-import classNames from "classnames";
+import { useLocation } from "react-router-dom";
+// import classNames from "classnames";
+
+//Chakra UI Imports
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Flex,
+  Spacer,
+  Container,
+  Image,
+  Heading,
+  Text,
+  Box,
+  Avatar,
+  Progress,
+  HStack,
+  VStack,
+} from "@chakra-ui/react";
+
+//Toast import
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
+
+//Model Imports
+import { Pokemon } from "../models/Pokemon";
+import { PokeStats } from "../models/PokeStats";
 
 const PokemonData: React.FC = () => {
   const location = useLocation();
   const PokemonReq = location.state;
-
   const [Pokemon, setPokemon] = useState<Pokemon | null>(
     PokemonReq?.PokemonData as Pokemon
   );
@@ -17,111 +40,26 @@ const PokemonData: React.FC = () => {
     PokemonReq?.PokemonStats as PokeStats
   );
 
-  const [search, setSearch] = useState<string | null>(null);
+  const [search, setSearch] = useState<string>("");
   const [submit, setSubmit] = useState(false);
-
-  const [type1, setType1] = useState<string>(
-    Pokemon ? Pokemon.types[0].type.name : "normal"
-  );
-  const [type2, setType2] = useState<string>(
-    Pokemon ? Pokemon?.types[1]?.type?.name : ""
-  );
-
-  const [tab, setTab] = useState(0);
-
-  const tabs = ["Info", "Stats", "About"];
-  // const [fill, setFill] = useState(50);
-
-  // let stat: number = 0;
-  // switch (fill) {
-  //   case 0:
-  // }
-
-  // const barStyle = {
-  //   width: "10rem",
-  //   height: "1rem",
-  //   background: `linear-gradient(to right, #4CAF50 ${fill}%, transparent ${fill}%)`,
-  //   border: "1px solid #4CAF50",
-  //   border_radius: "0.5rem",
-  // };
-
-  const tabContents = [
-    {
-      name: "Info",
-      content: (
-        <p className="text-justify mt-4">
-          {PokeStats?.flavor_text_entries[0]?.flavor_text}
-        </p>
-      ),
-    },
-    {
-      name: "Stats",
-      content: (
-        <table className="table-auto border-gray-700 mt-4">
-          <tbody>
-            <tr>
-              <th>Height</th>
-              <td>{Pokemon?.height}</td>
-              <th>Weight</th>
-              <td>{Pokemon?.weight}</td>
-            </tr>
-            <tr>
-              <th>Attack</th>
-              <td>{Pokemon?.stats[1]?.base_stat}</td>
-              <th>Defense</th>
-              <td>{Pokemon?.stats[2]?.base_stat}</td>
-            </tr>
-            <tr>
-              <th>Speed</th>
-              <td>{Pokemon?.stats[5]?.base_stat}</td>
-              <th>Hitpoints</th>
-              <td>{Pokemon?.stats[0]?.base_stat}</td>
-            </tr>
-            <tr>
-              <th>Special Attack</th>
-              <td>{Pokemon?.stats[3]?.base_stat}</td>
-              <th>Special Defense</th>
-              <td>{Pokemon?.stats[4]?.base_stat}</td>
-            </tr>
-          </tbody>
-        </table>
-      ),
-    },
-    {
-      name: "About",
-      content: (
-        <div className="stats-data w-60 flex items-center px-2 justify-between">
-          <h1>No About Data Yet</h1>
-        </div>
-      ),
-    },
-  ];
 
   const handleChange = (e: SyntheticEvent) => {
     const target = e.target as HTMLInputElement;
     setSearch(target.value);
   };
-
   const handleSubmit = useCallback((e: any) => {
     e.preventDefault();
     setSubmit(true);
   }, []);
 
   useEffect(() => {
-    if (submit && search !== null && search !== "") {
-      const dataAPI: string = `https://pokeapi.co/api/v2/pokemon/${search.toLowerCase()}`;
-
+    if (submit && search !== "") {
+      const dataAPI: string = `https://pokeapi.co/api/v2/pokemon/${search?.toLowerCase()}`;
       fetch(dataAPI)
         .then((res) => res.json())
         .then((data) => {
           const statsAPI: string = `https://pokeapi.co/api/v2/pokemon-species/${data?.id}`;
           setPokemon(data as Pokemon);
-          setType1(data.types[0].type.name);
-          if (data.types[1]) {
-            setType2(data.types[1].type.name);
-          } else {
-            setType2("");
-          }
           return fetch(statsAPI);
         })
         .then((res) => res.json())
@@ -133,8 +71,6 @@ const PokemonData: React.FC = () => {
             timeout: 1500,
             message: `Fetching data for ${search}...`,
           });
-          console.log(Pokemon);
-          console.log(PokeStats);
         })
         .catch((err: any) => {
           console.error(err);
@@ -145,17 +81,205 @@ const PokemonData: React.FC = () => {
             message: `${search} not found..Check query..`,
           });
         });
+      setSubmit(false);
     }
-    setSubmit(false);
-  }, [submit, search, Pokemon, PokeStats, type1, type2]);
-
-  const themeClass: string[] = [
-    themeTypes[type1 as keyof Theme],
-    type2 ? themeTypes[type2 as keyof Theme] : "",
-  ];
+  }, [submit, search, Pokemon, PokeStats]);
 
   return (
-    <div className="relative h-screen flex flex-col justify-evenly">
+    <div className="h-screen flex flex-col justify-center">
+      <nav className="bg-red-500 p-2 fixed top-0 w-screen">
+        <Flex>
+          <div className="text-3xl flex items-center pl-2">PokedeX</div>
+          <Spacer />
+          <Flex className="justify-center items-center">
+            <div className="flex items-center bg-gray-100 rounded-md px-2 py-2 my-1 mr-1 mx-1">
+              <form
+                method="get"
+                onSubmit={handleSubmit}
+                className="flex items-center justify-center"
+              >
+                <div className="search-icon px-2 text-black hover:text-gray-500 transition-all duration-300 flex items-center">
+                  <input
+                    type="text"
+                    name="search"
+                    id="pokemon"
+                    onChange={handleChange}
+                    placeholder="Search by name or ID.."
+                    className="flex-1 bg-gray-100 focus:outline-none items-center"
+                    autoComplete="off"
+                  />
+                  <button
+                    type="submit"
+                    className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                      onClick={handleSubmit}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </form>
+            </div>
+          </Flex>
+        </Flex>
+      </nav>
+      <Container>
+        <HStack spacing="48px">
+          <Card maxW="md">
+            <CardHeader>
+              <Flex>
+                <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
+                  <Avatar
+                    name={Pokemon?.name}
+                    src={Pokemon?.sprites?.front_default}
+                  />
+                  <Box>
+                    <Heading size="sm">{Pokemon?.name}</Heading>
+                    <Text>{PokeStats?.generation.name}</Text>
+                  </Box>
+                </Flex>
+              </Flex>
+            </CardHeader>
+            <CardBody>
+              <div className="flex justify-center">
+                <Image
+                  objectFit="cover"
+                  sx={{ "max-width": "50%", "align-items": "center" }}
+                  src={Pokemon?.sprites.other.dream_world.front_default}
+                  alt="Chakra UI"
+                />
+              </div>
+            </CardBody>
+            <CardFooter
+              justify="space-between"
+              flexWrap="wrap"
+              sx={{
+                "& > button": {
+                  minW: "136px",
+                },
+              }}
+            ></CardFooter>
+          </Card>
+          <Box>
+            <VStack>
+              <Text variant="3xl">Stats</Text>
+              <Progress value={80} size="xl" />
+            </VStack>
+          </Box>
+        </HStack>
+      </Container>
+    </div>
+  );
+  // const [type1, setType1] = useState<string>(
+  //   Pokemon ? Pokemon.types[0].type.name : "normal"
+  // );
+  // const [type2, setType2] = useState<string>(
+  //   Pokemon ? Pokemon?.types[1]?.type?.name : ""
+  // );
+  //
+
+  // useEffect(() => {
+  //   if (submit && search !== null && search !== "") {
+  //     const dataAPI: string = `https://pokeapi.co/api/v2/pokemon/${search.toLowerCase()}`;
+  //     fetch(dataAPI)
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         const statsAPI: string = `https://pokeapi.co/api/v2/pokemon-species/${data?.id}`;
+  //         setPokemon(data as Pokemon);
+  //         setType1(data.types[0].type.name);
+  //         if (data.types[1]) {
+  //           setType2(data.types[1].type.name);
+  //         } else {
+  //           setType2("");
+  //         }
+  //         return fetch(statsAPI);
+  //       })
+  //       .then((res) => res.json())
+  //       .then((data) => {
+  //         setPokeStats(data as PokeStats);
+  //         iziToast.success({
+  //           title: "Success",
+  //           position: "topLeft",
+  //           timeout: 1500,
+  //           message: `Fetching data for ${search}...`,
+  //         });
+  //         console.log(Pokemon);
+  //         console.log(PokeStats);
+  //       })
+  //       .catch((err: any) => {
+  //         console.error(err);
+  //         iziToast.error({
+  //           title: "Error",
+  //           position: "topLeft",
+  //           timeout: 1500,
+  //           message: `${search} not found..Check query..`,
+  //         });
+  //       });
+  //   }
+  //   setSubmit(false);
+  // }, [submit, search, Pokemon, PokeStats, type1, type2]);
+  // const themeClass: string[] = [
+  //   themeTypes[type1 as keyof Theme],
+  //   type2 ? themeTypes[type2 as keyof Theme] : "",
+  // ];
+};
+
+// const themeTypes: Theme = {
+//   normal: "theme-normal",
+//   fire: "theme-fire",
+//   water: "theme-water",
+//   grass: "theme-grass",
+//   electric: "theme-electric",
+//   ice: "theme-ice",
+//   fighting: "theme-fighting",
+//   poison: "theme-poison",
+//   ground: "theme-ground",
+//   flying: "theme-flying",
+//   psychic: "theme-psychic",
+//   bug: "theme-bug",
+//   rock: "theme-rock",
+//   ghost: "theme-ghost",
+//   dragon: "theme-dragon",
+//   dark: "theme-dark",
+//   steel: "theme-steel",
+//   fairy: "theme-fairy",
+// };
+
+// interface Theme {
+//   normal: string;
+//   fire: string;
+//   water: string;
+//   grass: string;
+//   electric: string;
+//   ice: string;
+//   fighting: string;
+//   poison: string;
+//   ground: string;
+//   flying: string;
+//   psychic: string;
+//   bug: string;
+//   rock: string;
+//   ghost: string;
+//   dragon: string;
+//   dark: string;
+//   steel: string;
+//   fairy: string;
+// }
+
+export default PokemonData;
+
+/* <div className="relative h-screen flex flex-col justify-evenly">
       <div className="search-box absolute top-0 flex items-center justify-between w-screen">
         <div className="md:visible text-3xl pl-4 ">Pokedex</div>
         <div className="flex items-center justify-center">
@@ -322,50 +446,4 @@ const PokemonData: React.FC = () => {
           </div>
         )}
       </div>
-    </div>
-  );
-};
-
-const themeTypes: Theme = {
-  normal: "theme-normal",
-  fire: "theme-fire",
-  water: "theme-water",
-  grass: "theme-grass",
-  electric: "theme-electric",
-  ice: "theme-ice",
-  fighting: "theme-fighting",
-  poison: "theme-poison",
-  ground: "theme-ground",
-  flying: "theme-flying",
-  psychic: "theme-psychic",
-  bug: "theme-bug",
-  rock: "theme-rock",
-  ghost: "theme-ghost",
-  dragon: "theme-dragon",
-  dark: "theme-dark",
-  steel: "theme-steel",
-  fairy: "theme-fairy",
-};
-
-interface Theme {
-  normal: string;
-  fire: string;
-  water: string;
-  grass: string;
-  electric: string;
-  ice: string;
-  fighting: string;
-  poison: string;
-  ground: string;
-  flying: string;
-  psychic: string;
-  bug: string;
-  rock: string;
-  ghost: string;
-  dragon: string;
-  dark: string;
-  steel: string;
-  fairy: string;
-}
-
-export default PokemonData;
+    </div> */
