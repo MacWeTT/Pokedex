@@ -12,9 +12,15 @@ import {
   Tab,
   TabPanel,
   Progress,
-  Stack,
-  HStack,
-  VStack,
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
 } from "@chakra-ui/react";
 
 //Models
@@ -112,11 +118,13 @@ const PokemonData: React.FC = () => {
     <div className="flex flex-col justify-evenly">
       <div
         className={classNames(
-          "search-box flex items-center justify-between",
+          "search-box flex items-center md:justify-between justify-center",
           themeClass[0]
         )}
       >
-        <div className="md:visible text-3xl pl-4 ">Pokedex</div>
+        <div className="md:block text-3xl pl-4 font-semibold hidden">
+          Pokedex
+        </div>
         <div className="flex items-center justify-center">
           <div className="back-button pt-1 pr-1">
             <Link to="/">
@@ -178,9 +186,9 @@ const PokemonData: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="">
+      <div>
         {Pokemon && type1 ? (
-          <div className="">
+          <>
             <div
               className={classNames(
                 "flex justify-center items-center",
@@ -234,18 +242,31 @@ const PokemonData: React.FC = () => {
                   {PokeStats?.generation.name}
                 </span>
               </h1>
-              <Tabs defaultIndex={0}>
+              <Tabs defaultIndex={0} colorScheme={themeClass[0]}>
                 <TabList>
                   <Tab>Info</Tab>
                   <Tab>Stats</Tab>
                   <Tab>About</Tab>
                 </TabList>
-
                 <TabPanels>
                   <TabPanel>
+                    <h2 className="text-2xl mb-2">Entry</h2>
                     <p className="text-justify">
                       {PokeStats?.flavor_text_entries[5].flavor_text}
                     </p>
+                    <h2 className="text-2xl mb-2">Abilities</h2>
+                    <span className="flex">
+                      {Pokemon.abilities?.map((ability, index) => {
+                        return (
+                          <p
+                            className="uppercase mr-2 px-2 py-1 font-semibold border-2 border-gray-700 rounded-sm"
+                            key={index}
+                          >
+                            {ability.ability.name}
+                          </p>
+                        );
+                      })}
+                    </span>
                   </TabPanel>
                   <TabPanel>
                     <h3 className="flex justify-between my-2">
@@ -280,12 +301,53 @@ const PokemonData: React.FC = () => {
                     <Progress value={Pokemon?.stats[4]?.base_stat} />
                   </TabPanel>
                   <TabPanel>
-                    <p>three!</p>
+                    <TableContainer>
+                      <Table variant="simple">
+                        <Tbody>
+                          <Tr>
+                            <Th>Height</Th>
+                            <Td>{Pokemon?.height}</Td>
+                            <Th>Weight</Th>
+                            <Td>{Pokemon?.weight}</Td>
+                          </Tr>
+                          <Tr>
+                            <Th>Base Happiness</Th>
+                            <Td>{PokeStats?.base_happiness}</Td>
+                            <Th>Base Experience</Th>
+                            <Td>{Pokemon?.base_experience}</Td>
+                          </Tr>
+                          <Tr>
+                            <Th>Height</Th>
+                            <Td>{Pokemon?.height}</Td>
+                            <Th>Weight</Th>
+                            <Td>{Pokemon?.weight}</Td>
+                          </Tr>
+                          <Tr>
+                            <Th>Gender Differences</Th>
+                            <Td>
+                              {PokeStats?.has_gender_differences === true
+                                ? "Yes"
+                                : "No"}
+                            </Td>
+                            <Th>Hatch Counter</Th>
+                            <Td>{PokeStats?.hatch_counter}</Td>
+                          </Tr>
+                        </Tbody>
+                        <Tfoot>
+                          <Tr>
+                            <Th>Growth Rate</Th>
+                            <Td>{PokeStats?.growth_rate.name}</Td>
+                            <Th>Habitat</Th>
+                            <Td>{PokeStats?.habitat.name}</Td>
+                          </Tr>
+                        </Tfoot>
+                      </Table>
+                    </TableContainer>
                   </TabPanel>
                 </TabPanels>
               </Tabs>
             </div>
-          </div>
+          </>
         ) : (
           <div className="container flex flex-col justify-center items-center">
             <h1 className="text-center text-4xl">
