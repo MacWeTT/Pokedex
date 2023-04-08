@@ -1,15 +1,31 @@
 import React, { SyntheticEvent, useState, useEffect, useCallback } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { Pokemon } from "../models/Pokemon";
-import { PokeStats } from "../models/PokeStats";
 import classNames from "classnames";
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
+
+//ChakraUI
+import {
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Progress,
+  Stack,
+  HStack,
+  VStack,
+} from "@chakra-ui/react";
+
+//Models
+import { Pokemon } from "../models/Pokemon";
+import { PokeStats } from "../models/PokeStats";
 
 const PokemonData: React.FC = () => {
   const location = useLocation();
   const PokemonReq = location.state;
 
+  //Pokemon JSON Objects
   const [Pokemon, setPokemon] = useState<Pokemon | null>(
     PokemonReq?.PokemonData as Pokemon
   );
@@ -20,82 +36,13 @@ const PokemonData: React.FC = () => {
   const [search, setSearch] = useState<string | null>(null);
   const [submit, setSubmit] = useState(false);
 
+  //PokemonAPI Data
   const [type1, setType1] = useState<string>(
     Pokemon ? Pokemon.types[0].type.name : "normal"
   );
   const [type2, setType2] = useState<string>(
     Pokemon ? Pokemon?.types[1]?.type?.name : ""
   );
-
-  const [tab, setTab] = useState(0);
-
-  const tabs = ["Info", "Stats", "About"];
-  // const [fill, setFill] = useState(50);
-
-  // let stat: number = 0;
-  // switch (fill) {
-  //   case 0:
-  // }
-
-  // const barStyle = {
-  //   width: "10rem",
-  //   height: "1rem",
-  //   background: `linear-gradient(to right, #4CAF50 ${fill}%, transparent ${fill}%)`,
-  //   border: "1px solid #4CAF50",
-  //   border_radius: "0.5rem",
-  // };
-
-  const tabContents = [
-    {
-      name: "Info",
-      content: (
-        <p className="text-justify mt-4">
-          {PokeStats?.flavor_text_entries[0]?.flavor_text}
-        </p>
-      ),
-    },
-    {
-      name: "Stats",
-      content: (
-        <table className="table-auto border-gray-700 mt-4">
-          <tbody>
-            <tr>
-              <th>Height</th>
-              <td>{Pokemon?.height}</td>
-              <th>Weight</th>
-              <td>{Pokemon?.weight}</td>
-            </tr>
-            <tr>
-              <th>Attack</th>
-              <td>{Pokemon?.stats[1]?.base_stat}</td>
-              <th>Defense</th>
-              <td>{Pokemon?.stats[2]?.base_stat}</td>
-            </tr>
-            <tr>
-              <th>Speed</th>
-              <td>{Pokemon?.stats[5]?.base_stat}</td>
-              <th>Hitpoints</th>
-              <td>{Pokemon?.stats[0]?.base_stat}</td>
-            </tr>
-            <tr>
-              <th>Special Attack</th>
-              <td>{Pokemon?.stats[3]?.base_stat}</td>
-              <th>Special Defense</th>
-              <td>{Pokemon?.stats[4]?.base_stat}</td>
-            </tr>
-          </tbody>
-        </table>
-      ),
-    },
-    {
-      name: "About",
-      content: (
-        <div className="stats-data w-60 flex items-center px-2 justify-between">
-          <h1>No About Data Yet</h1>
-        </div>
-      ),
-    },
-  ];
 
   const handleChange = (e: SyntheticEvent) => {
     const target = e.target as HTMLInputElement;
@@ -133,6 +80,13 @@ const PokemonData: React.FC = () => {
             timeout: 1500,
             message: `Fetching data for ${search}...`,
           });
+          // if (PokeStats?.flavor_text_entries) {
+          //   flavourTextEntries = PokeStats?.flavor_text_entries.filter(
+          //     (entry: any) => {
+          //       return entry.language.name === "en";
+          //     }
+          //   );
+          // }
           console.log(Pokemon);
           console.log(PokeStats);
         })
@@ -155,8 +109,13 @@ const PokemonData: React.FC = () => {
   ];
 
   return (
-    <div className="relative h-screen flex flex-col justify-evenly">
-      <div className="search-box absolute top-0 flex items-center justify-between w-screen">
+    <div className="flex flex-col justify-evenly">
+      <div
+        className={classNames(
+          "search-box flex items-center justify-between",
+          themeClass[0]
+        )}
+      >
         <div className="md:visible text-3xl pl-4 ">Pokedex</div>
         <div className="flex items-center justify-center">
           <div className="back-button pt-1 pr-1">
@@ -219,10 +178,15 @@ const PokemonData: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col justify-evenly items-center">
+      <div className="">
         {Pokemon && type1 ? (
-          <div className="pokemon lg:p-20 container grid grid-cols-1 lg:grid-cols-2 ">
-            <div className="flex justify-center items-center">
+          <div className="">
+            <div
+              className={classNames(
+                "flex justify-center items-center",
+                themeClass[0]
+              )}
+            >
               <div
                 className={classNames(
                   "pokemon-sprite w-72 h-72 items-center container flex justify-center p-4",
@@ -246,7 +210,7 @@ const PokemonData: React.FC = () => {
             </div>
             <div className="pokemon-data p-4 m-4">
               <span className="flex justify-between">
-                <h1 className="bg-black text-white inline p-2 rounded-lg text-3xl my-2">
+                <h1 className="bg-black text-white inline p-2 rounded-lg text-3xl my-2 id-tag text-center">
                   {Pokemon?.id}
                 </h1>
                 <h1 className="uppercase py-2 font-bold text-3xl">
@@ -270,25 +234,56 @@ const PokemonData: React.FC = () => {
                   {PokeStats?.generation.name}
                 </span>
               </h1>
-              <div>
-                <ul className="tabs grid grid-cols-3 cursor-pointer">
-                  {tabs.map((tab, index) => (
-                    <li
-                      key={index}
-                      onClick={() => setTab(index)}
-                      className={classNames(
-                        "p-2 border-2 border-black text-center hover:font-semibold",
-                        themeClass[0]
-                      )}
-                    >
-                      {tab}
-                    </li>
-                  ))}
-                </ul>
-                <div className="flex justify-center align-center">
-                  {tabContents[tab].content}
-                </div>
-              </div>
+              <Tabs defaultIndex={0}>
+                <TabList>
+                  <Tab>Info</Tab>
+                  <Tab>Stats</Tab>
+                  <Tab>About</Tab>
+                </TabList>
+
+                <TabPanels>
+                  <TabPanel>
+                    <p className="text-justify">
+                      {PokeStats?.flavor_text_entries[5].flavor_text}
+                    </p>
+                  </TabPanel>
+                  <TabPanel>
+                    <h3 className="flex justify-between my-2">
+                      <p>Attack</p>
+                      <p>{Pokemon?.stats[1]?.base_stat}</p>
+                    </h3>
+                    <Progress value={Pokemon?.stats[1]?.base_stat} />
+                    <h3 className="flex justify-between my-2">
+                      <p>Defense</p>
+                      <p>{Pokemon?.stats[2]?.base_stat}</p>
+                    </h3>
+                    <Progress value={Pokemon?.stats[2]?.base_stat} />
+                    <h3 className="flex justify-between my-2">
+                      <p>Speed</p>
+                      <p>{Pokemon?.stats[5]?.base_stat}</p>
+                    </h3>
+                    <Progress value={Pokemon?.stats[5]?.base_stat} />
+                    <h3 className="flex justify-between my-2">
+                      <p>Hitpoints</p>
+                      <p>{Pokemon?.stats[0]?.base_stat}</p>
+                    </h3>
+                    <Progress value={Pokemon?.stats[0]?.base_stat} />
+                    <h3 className="flex justify-between my-2">
+                      <p>Special Attack</p>
+                      <p>{Pokemon?.stats[3]?.base_stat}</p>
+                    </h3>
+                    <Progress value={Pokemon?.stats[3]?.base_stat} />
+                    <h3 className="flex justify-between my-2">
+                      <p>Special Defense</p>
+                      <p>{Pokemon?.stats[4]?.base_stat}</p>
+                    </h3>
+                    <Progress value={Pokemon?.stats[4]?.base_stat} />
+                  </TabPanel>
+                  <TabPanel>
+                    <p>three!</p>
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
             </div>
           </div>
         ) : (

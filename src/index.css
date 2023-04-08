@@ -2,10 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+html::-webkit-scrollbar {
+  width: 0.6rem;
+}
+
+html::-webkit-scrollbar-thumb {
+  @apply bg-red-600;
+  border-radius: 0px;
+}
+
 .search {
   height: 50vh;
   border-radius: 0 0 2% 2%;
   position: relative;
+}
+
+.id-tag {
+  min-width: 4.5rem;
 }
 
 .filter {
