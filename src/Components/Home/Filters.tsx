@@ -75,7 +75,9 @@ export default class Filters extends Component {
           </h2>
         </div>
         <div className="filter all bg-red-400">
-          <h2>Pokedex</h2>
+          <h2>
+            <Link to="/pokedex">Pokedex</Link>
+          </h2>
           <h2>
             <svg
               xmlns="http://www.w3.org/2000/svg"

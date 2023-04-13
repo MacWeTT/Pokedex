@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body{
+  font-family: 'Montserrat', sans-serif;
+}
+
 html::-webkit-scrollbar {
   width: 0.6rem;
 }
@@ -12,7 +16,7 @@ html::-webkit-scrollbar-thumb {
 }
 
 .search {
-  background: url("./Assets/Images/wp.png") no-repeat center
+  background: url("./Assets/Images/wp.png") no-repeat bottom
     rgb(239 68 68 / var(--tw-bg-opacity));
 }
 
@@ -21,7 +25,7 @@ html::-webkit-scrollbar-thumb {
 }
 
 .search-container {
-  top: 50%;
+  top: 35%;
   left: 50%;
   transform: translate(-50%, -50%);
 }

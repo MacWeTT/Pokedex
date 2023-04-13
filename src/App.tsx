@@ -5,10 +5,9 @@ import Home from "./Pages/Home";
 import PokemonData from "./Pages/PokemonData";
 import { ChakraProvider } from "@chakra-ui/react";
 import { extendTheme } from "@chakra-ui/react";
+import Pokedex from "./Pages/Pokedex";
 
-const theme = extendTheme({
-  colors: {},
-});
+const theme = extendTheme({});
 
 function App() {
   return (
@@ -18,6 +17,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/pokemon" element={<PokemonData />} />
           <Route path="/types" element={<PokeTypes />} />
+          <Route path="/pokedex" element={<Pokedex />} />
         </Routes>
       </ChakraProvider>
     </div>

@@ -1,7 +1,7 @@
 import React, { SyntheticEvent, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Pokemon } from "../models/Pokemon";
-import { PokeStats } from "../models/PokeStats";
+import { useNavigate, Link } from "react-router-dom";
+import { Pokemon } from "../../models/Pokemon";
+import { PokeStats } from "../../models/PokeStats";
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
@@ -37,7 +37,6 @@ const Search: React.FC = () => {
           timeout: 3000,
           message: `Fetching data for ${search}...`,
         });
-        console.log(PokemonStats);
         setTimeout(() => {
           navigate("/pokemon", {
             replace: false,
@@ -58,8 +57,37 @@ const Search: React.FC = () => {
   }
   return (
     <div className="search h-screen relative flex flex-col p-4 bg-red-500">
-      <nav>
-        <h2 className="text-white text-3xl">Pokedex</h2>
+      <nav className="flex justify-between">
+        <h2 className="text-white text-3xl">
+          <Link
+            to="/"
+            className="hover:text-gray-500 transition-all duration-300"
+          >
+            Pokedex
+          </Link>
+        </h2>
+        <h2>
+          <a
+            href="#features"
+            className="flex text-white text-3xl items-center justify-center hover:text-gray-500 transition-all duration-300 cursor-pointer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="w-6 h-6"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+              />
+            </svg>
+            <p className="pl-2">Features</p>
+          </a>
+        </h2>
       </nav>
       <div className="search-container absolute flex flex-col justify-center">
         <h1 className="text-white text-4xl font-semibold text-center search-head">
