@@ -1,8 +1,8 @@
 import React from "react";
-import classNames from "classnames";
-import { useNavigate } from "react-router-dom";
 import { Pokemon } from "../../models/Pokemon";
-import GetPokemonStats from "../../API/getPokemonStats";
+// import classNames from "classnames";
+// import { useNavigate } from "react-router-dom";
+// import GetPokemonStats from "../../API/getPokemonStats";
 
 interface PokeCardProps {
   pokemon: Pokemon;

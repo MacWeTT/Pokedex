@@ -1,17 +1,14 @@
 import React, { SyntheticEvent, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Pokemon } from "../../models/Pokemon";
-import { PokeStats } from "../../models/PokeStats";
+import axios from "axios";
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
 const Search: React.FC = () => {
-  const [search, setSearch] = useState("");
-
   const navigate = useNavigate();
 
-  let PokemonData: Pokemon;
-  let PokemonStats: PokeStats;
+  const [search, setSearch] = useState("");
+  const [pokemonID, setPokemonID] = useState(1);
 
   const handleChange = (e: SyntheticEvent) => {
     const target = e.target as HTMLInputElement;
@@ -19,32 +16,24 @@ const Search: React.FC = () => {
   };
   function handleSubmit(e: SyntheticEvent) {
     e.preventDefault();
-    const dataAPI: string = `https://pokeapi.co/api/v2/pokemon/${search.toLowerCase()}`;
-
-    fetch(dataAPI)
-      .then((res) => res.json())
-      .then((data) => {
-        const statsAPI: string = `https://pokeapi.co/api/v2/pokemon-species/${data?.id}`;
-        PokemonData = data as Pokemon;
-        return fetch(statsAPI);
-      })
-      .then((res) => res.json())
-      .then((data) => {
-        PokemonStats = data as PokeStats;
+    axios({
+      method: "get",
+      url: `https://pokeapi.co/api/v2/pokemon/${search.toLowerCase()}`,
+    })
+      .then((res) => {
+        setPokemonID(res.data.id);
         iziToast.success({
           title: "Success",
           position: "topRight",
           timeout: 3000,
           message: `Fetching data for ${search}...`,
         });
+        console.log(pokemonID);
         setTimeout(() => {
-          navigate("/pokemon", {
-            replace: false,
-            state: { PokemonData, PokemonStats },
-          });
+          navigate("/pokemon", { replace: false, state: { ID: pokemonID } });
         }, 3000);
       })
-      .catch((err: any) => {
+      .catch((err) => {
         console.error(err);
         setSearch("");
         iziToast.error({
@@ -55,6 +44,7 @@ const Search: React.FC = () => {
         });
       });
   }
+
   return (
     <div className="search h-screen relative flex flex-col p-4 bg-red-500">
       <nav className="flex justify-between">
@@ -139,3 +129,40 @@ const Search: React.FC = () => {
 };
 
 export default Search;
+
+// const dataAPI: string = `https://pokeapi.co/api/v2/pokemon/${search.toLowerCase()}`;
+
+// fetch(dataAPI)
+//   .then((res) => res.json())
+//   .then((data) => {
+//     const statsAPI: string = `https://pokeapi.co/api/v2/pokemon-species/${data?.id}`;
+//     PokemonData = data as Pokemon;
+//     return fetch(statsAPI);
+//   })
+//   .then((res) => res.json())
+//   .then((data) => {
+//     PokemonStats = data as PokeStats;
+//     const ID = PokemonData.id;
+//     iziToast.success({
+//       title: "Success",
+//       position: "topRight",
+//       timeout: 3000,
+//       message: `Fetching data for ${search}...`,
+//     });
+//     setTimeout(() => {
+//       navigate("/pokemon", {
+//         replace: false,
+//         state: { ID },
+//       });
+//     }, 3000);
+//   })
+//   .catch((err: any) => {
+//     console.error(err);
+//     setSearch("");
+//     iziToast.error({
+//       title: "Error",
+//       position: "topRight",
+//       timeout: 3000,
+//       message: `${search} not found..Check query..`,
+//     });
+//   });

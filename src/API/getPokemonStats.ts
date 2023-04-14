@@ -11,12 +11,12 @@ function GetPokemonStats(query: string | number) {
     let cancel: Canceler;
     axios({
       method: "GET",
-      url: `https://pokeapi.co/api/v2/pokemon/${query}`,
+      url: `https://pokeapi.co/api/v2/pokemon-species/${query}`,
       cancelToken: new axios.CancelToken((c) => (cancel = c)),
     })
       .then((res) => {
+        console.log(res);
         setPokemonStats(res.data as PokeStats);
-        console.log(pokemonStats);
         setLoading(false);
       })
       .catch((e) => {
@@ -24,7 +24,7 @@ function GetPokemonStats(query: string | number) {
         setError(true);
       });
     return () => cancel();
-  }, [query, pokemonStats]);
+  }, [query]);
 
   return { loading, error, pokemonStats };
 }

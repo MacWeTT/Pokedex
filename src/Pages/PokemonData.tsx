@@ -30,37 +30,29 @@ import {
   AccordionIcon,
 } from "@chakra-ui/react";
 
-//Models
-import { Pokemon } from "../models/Pokemon";
-import { PokeStats } from "../models/PokeStats";
+//API
+import GetPokemon from "../API/getPokemon";
+import GetPokemonStats from "../API/getPokemonStats";
 
 const PokemonData: React.FC = () => {
   const location = useLocation();
-  const PokemonReq = location.state;
+  const ReqID = location.state.ID as number;
+  const [pokemonID, setPokemonID] = useState<string | number>(ReqID ?? 1);
 
-  //Pokemon JSON Objects
-  const [Pokemon, setPokemon] = useState<Pokemon | null>(
-    PokemonReq?.PokemonData as Pokemon
-  );
-  const [PokeStats, setPokeStats] = useState<PokeStats | null>(
-    PokemonReq?.PokemonStats as PokeStats
-  );
+  const { loading, pokemon, type1, type2 } = GetPokemon(pokemonID ?? 1);
+  const { pokemonStats, error } = GetPokemonStats(pokemonID ?? 1);
 
   //Submissions
   const [search, setSearch] = useState<string | null>(null);
-  const [submit, setSubmit] = useState(false);
-  const [prevAndNext, setPrevAndNext] = useState(false);
+  // const [submit, setSubmit] = useState(false);
+  // const [prevAndNext, setPrevAndNext] = useState(false);
 
-  //PokemonAPI Data
-  const [type1, setType1] = useState<string>(
-    Pokemon ? Pokemon.types[0].type.name : "normal"
-  );
-  const [type2, setType2] = useState<string>(
-    Pokemon ? Pokemon?.types[1]?.type?.name : ""
-  );
-  const [pokemonID, setPokemonID] = useState<number | null>(
-    Pokemon?.id as number
-  );
+  useEffect(() => {
+    if (search) {
+      setPokemonID(search);
+      setSearch(null);
+    }
+  }, [search, pokemonID]);
 
   const handleChange = (e: SyntheticEvent) => {
     const target = e.target as HTMLInputElement;
@@ -69,12 +61,13 @@ const PokemonData: React.FC = () => {
 
   const handleNext = () => {
     if (pokemonID) {
-      setPokemonID(pokemonID + 1);
-      setPrevAndNext(true);
+      setPokemonID((pokemonID as number) + 1);
+      // setPrevAndNext(true);
     } else {
+      setPokemonID(1);
       iziToast.error({
         title: "Error",
-        position: "center",
+        position: "topCenter",
         timeout: 1500,
         message: `No Pokemon ID found..`,
       });
@@ -82,12 +75,13 @@ const PokemonData: React.FC = () => {
   };
   const handlePrev = () => {
     if (pokemonID) {
-      setPokemonID(pokemonID - 1);
-      setPrevAndNext(true);
+      setPokemonID((pokemonID as number) - 1);
+      // setPrevAndNext(true);
     } else {
+      setPokemonID(1);
       iziToast.error({
         title: "Error",
-        position: "center",
+        position: "topCenter",
         timeout: 1500,
         message: `No Pokemon ID found..`,
       });
@@ -96,96 +90,8 @@ const PokemonData: React.FC = () => {
 
   const handleSubmit = useCallback((e: any) => {
     e.preventDefault();
-    setSubmit(true);
+    // setSubmit(true);
   }, []);
-
-  useEffect(() => {
-    if (submit && search !== null && search !== "") {
-      const dataAPI: string = `https://pokeapi.co/api/v2/pokemon/${search.toLowerCase()}`;
-
-      fetch(dataAPI)
-        .then((res) => res.json())
-        .then((data) => {
-          const statsAPI: string = `https://pokeapi.co/api/v2/pokemon-species/${data?.id}`;
-          setPokemon(data as Pokemon);
-          setPokemonID(data.id as number);
-          setType1(data.types[0].type.name);
-          if (data.types[1]) {
-            setType2(data.types[1].type.name);
-          } else {
-            setType2("");
-          }
-          return fetch(statsAPI);
-        })
-        .then((res) => res.json())
-        .then((data) => {
-          setPokeStats(data as PokeStats);
-          iziToast.success({
-            title: "Success",
-            position: "topLeft",
-            timeout: 1500,
-            message: `Fetching data for ${search}...`,
-          });
-          console.log(Pokemon);
-          console.log(PokeStats);
-        })
-        .catch((err: any) => {
-          console.error(err);
-          iziToast.error({
-            title: "Error",
-            position: "topLeft",
-            timeout: 1500,
-            message: `${search} not found..Check query..`,
-          });
-        });
-      setSubmit(false);
-    } else if (prevAndNext) {
-      const dataAPI: string = `https://pokeapi.co/api/v2/pokemon/${pokemonID}`;
-      fetch(dataAPI)
-        .then((res) => res.json())
-        .then((data) => {
-          const statsAPI: string = `https://pokeapi.co/api/v2/pokemon-species/${data?.id}`;
-          setPokemon(data as Pokemon);
-          setPokemonID(data.id as number);
-          setType1(data.types[0].type.name);
-          if (data.types[1]) {
-            setType2(data.types[1].type.name);
-          } else {
-            setType2("");
-          }
-          return fetch(statsAPI);
-        })
-        .then((res) => res.json())
-        .then((data) => {
-          setPokeStats(data as PokeStats);
-          iziToast.success({
-            title: "Success",
-            position: "topLeft",
-            timeout: 750,
-            message: `Fetching data for ${pokemonID}...`,
-          });
-        })
-        .catch((err: any) => {
-          console.error(err);
-          iziToast.error({
-            title: "Error",
-            position: "topLeft",
-            timeout: 1500,
-            message: `${pokemonID} not found..Check query..`,
-          });
-        });
-      setPrevAndNext(false);
-    }
-  }, [
-    submit,
-    search,
-    Pokemon,
-    PokeStats,
-    pokemonID,
-    type1,
-    type2,
-    prevAndNext,
-  ]);
 
   const themeClass: string[] = [
     themeTypes[type1 as keyof Theme],
@@ -193,84 +99,86 @@ const PokemonData: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col justify-evenly">
-      <nav
-        className={classNames(
-          "search-box flex items-center md:justify-between justify-center",
-          themeClass[0]
-        )}
-      >
-        <div className="md:block text-3xl pl-4 font-semibold hidden text-justify">
-          <Link
-            to="/"
-            className="hover:text-gray-700 transition-all duration-300"
+    <>
+      {loading && <div>Loading...</div>}
+      {error && <div>Error</div>}
+      {pokemon && pokemonStats && (
+        <div className="flex flex-col justify-evenly">
+          <nav
+            className={classNames(
+              "search-box flex items-center md:justify-between justify-center",
+              themeClass[0]
+            )}
           >
-            Pokedex
-          </Link>
-        </div>
-        <div className="flex items-center justify-center">
-          <div className="back-button pt-1 pr-1">
-            <Link to="/">
-              <button className="text-black hover:text-gray-700 transition-all duration-300">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15.75 19.5L8.25 12l7.5-7.5"
-                  />
-                </svg>
-              </button>
-            </Link>
-          </div>
-          <div className="flex items-center bg-gray-100 rounded-md px-2 py-2 my-4 mr-4 mx-2">
-            <form
-              method="get"
-              onSubmit={handleSubmit}
-              className="flex items-center justify-center"
-            >
-              <div className="search-icon px-2 text-black hover:text-gray-500 transition-all duration-300 flex items-center">
-                <input
-                  type="text"
-                  name="search"
-                  id="pokemon"
-                  onChange={handleChange}
-                  placeholder="Enter Name or ID.."
-                  className="flex-1 bg-gray-100 focus:outline-none items-center"
-                />
-                <button
-                  type="submit"
-                  className="text-gray-500 hover:text-gray-700 focus:outline-none"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-6 h-6"
-                    onClick={handleSubmit}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                    />
-                  </svg>
-                </button>
+            <div className="md:block text-3xl pl-4 font-semibold hidden text-justify">
+              <Link
+                to="/"
+                className="hover:text-gray-700 transition-all duration-300"
+              >
+                Pokedex
+              </Link>
+            </div>
+            <div className="flex items-center justify-center">
+              <div className="back-button pt-1 pr-1">
+                <Link to="/">
+                  <button className="text-black hover:text-gray-700 transition-all duration-300">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="w-6 h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15.75 19.5L8.25 12l7.5-7.5"
+                      />
+                    </svg>
+                  </button>
+                </Link>
               </div>
-            </form>
-          </div>
-        </div>
-      </nav>
-      {Pokemon && type1 ? (
-        <>
+              <div className="flex items-center bg-gray-100 rounded-md px-2 py-2 my-4 mr-4 mx-2">
+                <form
+                  method="get"
+                  onSubmit={handleSubmit}
+                  className="flex items-center justify-center"
+                >
+                  <div className="search-icon px-2 text-black hover:text-gray-500 transition-all duration-300 flex items-center">
+                    <input
+                      type="text"
+                      name="search"
+                      id="pokemon"
+                      onChange={handleChange}
+                      placeholder="Enter Name or ID.."
+                      className="flex-1 bg-gray-100 focus:outline-none items-center"
+                    />
+                    <button
+                      type="submit"
+                      className="text-gray-500 hover:text-gray-700 focus:outline-none"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                        onClick={handleSubmit}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </nav>
           <div
             className={classNames(
               "flex justify-between items-center",
@@ -298,7 +206,7 @@ const PokemonData: React.FC = () => {
                 </svg>
               </button>
               <h2 className="mt-2 text-xl font-semibold">
-                {Pokemon?.id - 1 ?? "None"}
+                {pokemon?.id - 1 ?? "None"}
               </h2>
             </span>
             <div
@@ -307,15 +215,15 @@ const PokemonData: React.FC = () => {
                 themeClass[0]
               )}
             >
-              {Pokemon?.sprites?.other?.dream_world?.front_default ? (
+              {pokemon?.sprites?.other?.dream_world?.front_default ? (
                 <img
-                  src={Pokemon?.sprites?.other?.dream_world?.front_default}
+                  src={pokemon?.sprites?.other?.dream_world?.front_default}
                   alt="pokemon"
                   className="object-contain items-center w-full h-full"
                 />
               ) : (
                 <img
-                  src={Pokemon?.sprites?.other?.home?.front_default}
+                  src={pokemon?.sprites?.other?.home?.front_default}
                   alt="pokemon"
                   className="object-contain items-center w-full h-full"
                 />
@@ -342,47 +250,47 @@ const PokemonData: React.FC = () => {
                 </svg>
               </button>
               <h2 className="mt-2 text-xl font-semibold">
-                {Pokemon?.id + 1 ?? "None"}
+                {pokemon?.id + 1 ?? "None"}
               </h2>
             </span>
           </div>
           <div className="pokemon-data p-4 m-4">
             <span className="flex justify-between">
               <h1 className="bg-black text-white inline p-2 rounded-lg text-3xl my-2 id-tag text-center">
-                {Pokemon?.id}
+                {pokemon?.id}
               </h1>
               <h1 className="uppercase py-2 font-bold text-3xl">
-                {Pokemon?.name}
+                {pokemon?.name}
               </h1>
             </span>
             <h1 className="flex justify-between my-2">
               <span>
                 <span className={classNames("type-data", themeClass[0])}>
-                  {Pokemon.types[0].type.name}
+                  {type1}
                 </span>
-                {Pokemon.types[1] ? (
+                {type2 !== "" ? (
                   <span className={classNames("type-data", themeClass[1])}>
-                    {Pokemon.types[1].type.name}
+                    {type2}
                   </span>
                 ) : (
                   ""
                 )}
               </span>
               <span className="uppercase font-semibold">
-                {PokeStats?.generation.name}
+                {pokemonStats?.generation.name}
               </span>
             </h1>
             <Wrap>
               <WrapItem>
                 <Avatar
-                  name={Pokemon?.name}
-                  src={Pokemon?.sprites?.front_default}
+                  name={pokemon?.name}
+                  src={pokemon?.sprites?.front_default}
                   borderColor="gray.500"
                   size="lg"
                 />
                 <Avatar
-                  name={Pokemon?.name}
-                  src={Pokemon?.sprites?.front_shiny}
+                  name={pokemon?.name}
+                  src={pokemon?.sprites?.front_shiny}
                   borderColor="gray.500"
                   size="lg"
                 />
@@ -397,13 +305,13 @@ const PokemonData: React.FC = () => {
               <TabPanels>
                 <TabPanel>
                   <p className="text-justify">
-                    {PokeStats?.flavor_text_entries[5].flavor_text}
+                    {pokemonStats?.flavor_text_entries[0].flavor_text}
                   </p>
                   <p className="text-md mb-2">
                     Evolves From:
-                    {PokeStats?.evolves_from_species?.name ? (
+                    {pokemonStats?.evolves_from_species?.name ? (
                       <span className="hover:underline-offset-1 first-letter:capitalize">
-                        {" " + PokeStats?.evolves_from_species?.name}
+                        {" " + pokemonStats?.evolves_from_species?.name}
                       </span>
                     ) : (
                       " None"
@@ -422,7 +330,7 @@ const PokemonData: React.FC = () => {
                       <AccordionPanel pb={4}>
                         <Table>
                           <Tbody>
-                            {Pokemon?.abilities?.map((ability, index) => {
+                            {pokemon?.abilities?.map((ability, index) => {
                               return (
                                 <Tr key={index} className="uppercase">
                                   <Td>{ability.ability.name}</Td>
@@ -445,7 +353,7 @@ const PokemonData: React.FC = () => {
                       <AccordionPanel pb={4}>
                         <Table>
                           <Tbody>
-                            {PokeStats?.varieties?.map((variety, index) => {
+                            {pokemonStats?.varieties?.map((variety, index) => {
                               return (
                                 <Tr key={index} className="uppercase">
                                   <Td>{variety.pokemon.name}</Td>
@@ -468,7 +376,7 @@ const PokemonData: React.FC = () => {
                       <AccordionPanel pb={4}>
                         <Table>
                           <Tbody>
-                            {Pokemon.moves?.map((move, index) => {
+                            {pokemon.moves?.map((move, index) => {
                               return (
                                 <Tr key={index} className="uppercase">
                                   <Td>{move.move.name}</Td>
@@ -485,34 +393,34 @@ const PokemonData: React.FC = () => {
                 <TabPanel>
                   <h3 className="flex justify-between my-2">
                     <p>Attack</p>
-                    <p>{Pokemon?.stats[1]?.base_stat}</p>
+                    <p>{pokemon?.stats[1]?.base_stat}</p>
                   </h3>
-                  <Progress value={Pokemon?.stats[1]?.base_stat} />
+                  <Progress value={pokemon?.stats[1]?.base_stat} />
                   <h3 className="flex justify-between my-2">
                     <p>Defense</p>
-                    <p>{Pokemon?.stats[2]?.base_stat}</p>
+                    <p>{pokemon?.stats[2]?.base_stat}</p>
                   </h3>
-                  <Progress value={Pokemon?.stats[2]?.base_stat} />
+                  <Progress value={pokemon?.stats[2]?.base_stat} />
                   <h3 className="flex justify-between my-2">
                     <p>Speed</p>
-                    <p>{Pokemon?.stats[5]?.base_stat}</p>
+                    <p>{pokemon?.stats[5]?.base_stat}</p>
                   </h3>
-                  <Progress value={Pokemon?.stats[5]?.base_stat} />
+                  <Progress value={pokemon?.stats[5]?.base_stat} />
                   <h3 className="flex justify-between my-2">
                     <p>Hitpoints</p>
-                    <p>{Pokemon?.stats[0]?.base_stat}</p>
+                    <p>{pokemon?.stats[0]?.base_stat}</p>
                   </h3>
-                  <Progress value={Pokemon?.stats[0]?.base_stat} />
+                  <Progress value={pokemon?.stats[0]?.base_stat} />
                   <h3 className="flex justify-between my-2">
                     <p>Special Attack</p>
-                    <p>{Pokemon?.stats[3]?.base_stat}</p>
+                    <p>{pokemon?.stats[3]?.base_stat}</p>
                   </h3>
-                  <Progress value={Pokemon?.stats[3]?.base_stat} />
+                  <Progress value={pokemon?.stats[3]?.base_stat} />
                   <h3 className="flex justify-between my-2">
                     <p>Special Defense</p>
-                    <p>{Pokemon?.stats[4]?.base_stat}</p>
+                    <p>{pokemon?.stats[4]?.base_stat}</p>
                   </h3>
-                  <Progress value={Pokemon?.stats[4]?.base_stat} />
+                  <Progress value={pokemon?.stats[4]?.base_stat} />
                 </TabPanel>
                 <TabPanel>
                   <TableContainer>
@@ -520,42 +428,42 @@ const PokemonData: React.FC = () => {
                       <Tbody>
                         <Tr>
                           <Th>Height</Th>
-                          <Td>{Pokemon?.height}</Td>
+                          <Td>{pokemon?.height}</Td>
                           <Th>Weight</Th>
-                          <Td>{Pokemon?.weight}</Td>
+                          <Td>{pokemon?.weight}</Td>
                         </Tr>
                         <Tr>
                           <Th>Base Happiness</Th>
-                          <Td>{PokeStats?.base_happiness}</Td>
+                          <Td>{pokemonStats?.base_happiness}</Td>
                           <Th>Base Experience</Th>
-                          <Td>{Pokemon?.base_experience}</Td>
+                          <Td>{pokemon?.base_experience}</Td>
                         </Tr>
                         <Tr>
                           <Th>Height</Th>
-                          <Td>{Pokemon?.height}</Td>
+                          <Td>{pokemon?.height}</Td>
                           <Th>Weight</Th>
-                          <Td>{Pokemon?.weight}</Td>
+                          <Td>{pokemon?.weight}</Td>
                         </Tr>
                         <Tr>
                           <Th>Gender Differences</Th>
                           <Td>
-                            {PokeStats?.has_gender_differences === true
+                            {pokemonStats?.has_gender_differences === true
                               ? "Yes"
                               : "No"}
                           </Td>
                           <Th>Hatch Counter</Th>
-                          <Td>{PokeStats?.hatch_counter}</Td>
+                          <Td>{pokemonStats?.hatch_counter}</Td>
                         </Tr>
                       </Tbody>
                       <Tfoot>
                         <Tr>
                           <Th>Growth Rate</Th>
                           <Td className="uppercase">
-                            {PokeStats?.growth_rate.name}
+                            {pokemonStats?.growth_rate.name}
                           </Td>
                           <Th>Habitat</Th>
                           <Td className="uppercase">
-                            {PokeStats?.habitat?.name ?? "None"}
+                            {pokemonStats?.habitat?.name ?? "None"}
                           </Td>
                         </Tr>
                       </Tfoot>
@@ -565,38 +473,9 @@ const PokemonData: React.FC = () => {
               </TabPanels>
             </Tabs>
           </div>
-        </>
-      ) : (
-        <div className="container flex flex-col justify-center items-center">
-          <h1 className="text-center text-4xl">
-            You haven't fetched any data!
-          </h1>
-          <br />
-          <Link
-            to="/"
-            className="font-medium flex items-between text-center text-2xl"
-          >
-            <p className="flex items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.75 19.5L8.25 12l7.5-7.5"
-                />
-              </svg>
-            </p>
-            <p className="italic hover:font-bold">Go Back</p>
-          </Link>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
@@ -643,3 +522,126 @@ interface Theme {
 }
 
 export default PokemonData;
+
+// function replaceEscapeChars(str: string) {
+//   return str.replace(/\\[\w\d]+/g, " ");
+// }
+
+// useEffect(() => {
+//   if (submit && search !== null && search !== "") {
+//     const dataAPI: string = `https://pokeapi.co/api/v2/pokemon/${search.toLowerCase()}`;
+
+//     fetch(dataAPI)
+//       .then((res) => res.json())
+//       .then((data) => {
+//         const statsAPI: string = `https://pokeapi.co/api/v2/pokemon-species/${data?.id}`;
+//         setPokemon(data as Pokemon);
+//         setPokemonID(data.id as number);
+//         setType1(data.types[0].type.name);
+//         if (data.types[1]) {
+//           setType2(data.types[1].type.name);
+//         } else {
+//           setType2("");
+//         }
+//         console.log(PokeStats?.flavor_text_entries[0].flavor_text);
+//         return fetch(statsAPI);
+//       })
+//       .then((res) => res.json())
+//       .then((data) => {
+//         setPokeStats(data as PokeStats);
+//         iziToast.success({
+//           title: "Success",
+//           position: "topLeft",
+//           timeout: 1500,
+//           message: `Fetching data for ${search}...`,
+//         });
+//         console.log(Pokemon);
+//         console.log(PokeStats);
+//       })
+//       .catch((err: any) => {
+//         console.error(err);
+//         iziToast.error({
+//           title: "Error",
+//           position: "topLeft",
+//           timeout: 1500,
+//           message: `${search} not found..Check query..`,
+//         });
+//       });
+//     setSubmit(false);
+//   } else if (prevAndNext) {
+//     const dataAPI: string = `https://pokeapi.co/api/v2/pokemon/${pokemonID}`;
+//     fetch(dataAPI)
+//       .then((res) => res.json())
+//       .then((data) => {
+//         const statsAPI: string = `https://pokeapi.co/api/v2/pokemon-species/${data?.id}`;
+//         setPokemon(data as Pokemon);
+//         setPokemonID(data.id as number);
+//         setType1(data.types[0].type.name);
+//         if (data.types[1]) {
+//           setType2(data.types[1].type.name);
+//         } else {
+//           setType2("");
+//         }
+//         return fetch(statsAPI);
+//       })
+//       .then((res) => res.json())
+//       .then((data) => {
+//         setPokeStats(data as PokeStats);
+//         iziToast.success({
+//           title: "Success",
+//           position: "topLeft",
+//           timeout: 750,
+//           message: `Fetching data for ${pokemonID}...`,
+//         });
+//       })
+//       .catch((err: any) => {
+//         console.error(err);
+//         iziToast.error({
+//           title: "Error",
+//           position: "topLeft",
+//           timeout: 1500,
+//           message: `${pokemonID} not found..Check query..`,
+//         });
+//       });
+//     setPrevAndNext(false);
+//   }
+// }, [
+//   submit,
+//   search,
+//   Pokemon,
+//   PokeStats,
+//   pokemonID,
+//   type1,
+//   type2,
+//   prevAndNext,
+// ]);
+
+// : (
+//         <div className="container flex flex-col justify-center items-center">
+//           <h1 className="text-center text-4xl">
+//             You haven't fetched any data!
+//           </h1>
+//           <br />
+//           <Link
+//             to="/"
+//             className="font-medium flex items-between text-center text-2xl"
+//           >
+//             <p className="flex items-center">
+//               <svg
+//                 xmlns="http://www.w3.org/2000/svg"
+//                 fill="none"
+//                 viewBox="0 0 24 24"
+//                 strokeWidth={1.5}
+//                 stroke="currentColor"
+//                 className="w-6 h-6"
+//               >
+//                 <path
+//                   strokeLinecap="round"
+//                   strokeLinejoin="round"
+//                   d="M15.75 19.5L8.25 12l7.5-7.5"
+//                 />
+//               </svg>
+//             </p>
+//             <p className="italic hover:font-bold">Go Back</p>
+//           </Link>
+//         </div>
