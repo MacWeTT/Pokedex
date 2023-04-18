@@ -3,6 +3,7 @@ import axios from "axios";
 import PokeCard from "../Components/Pokedex/PokeCard";
 import { Pokemon } from "../models/Pokemon";
 import GetAllPokemon from "../API/getAllPokemon";
+import Navbar from "../Components/Navbar";
 
 const Pokedex: React.FC = () => {
   const [allPokemon, setAllPokemon] = useState<Pokemon[]>([]);
@@ -36,10 +37,11 @@ const Pokedex: React.FC = () => {
   };
 
   return (
-    <>
+    <div className="p-4">
+      <Navbar />
       <main className="container mx-auto my-auto flex flex-col justify-center ">
-        <h1 className="text-4xl mb-4">Pokedex Entries</h1>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-10 mx-10">
+        <h1 className="text-2xl mb-4">Pokedex Entries</h1>
+        <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-10 mx-10">
           {allPokemon.map((pokemon) => (
             <PokeCard pokemon={pokemon} key={pokemon.id} />
           ))}
@@ -55,7 +57,7 @@ const Pokedex: React.FC = () => {
       </main>
       {loading && <div>Loading...</div>}
       {error && <div>Error</div>}
-    </>
+    </div>
   );
 };
 

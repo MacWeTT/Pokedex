@@ -1,7 +1,8 @@
 import React, { SyntheticEvent, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Pokemon } from "../../models/Pokemon";
 import { PokeStats } from "../../models/PokeStats";
+import Navbar from "../Navbar";
 import iziToast from "izitoast";
 import "izitoast/dist/css/iziToast.min.css";
 
@@ -12,6 +13,9 @@ const Search: React.FC = () => {
 
   let PokemonData: Pokemon;
   let PokemonStats: PokeStats;
+
+  const replaceEscapeChars = (str: string) =>
+    str.replace(/(\r\n|\n|\r|\f)/gm, " ");
 
   const handleChange = (e: SyntheticEvent) => {
     const target = e.target as HTMLInputElement;
@@ -31,6 +35,13 @@ const Search: React.FC = () => {
       .then((res) => res.json())
       .then((data) => {
         PokemonStats = data as PokeStats;
+        const flavorText = data.flavor_text_entries.filter(
+          (entry: any) => entry.language.name === "en"
+        );
+        flavorText.forEach((entry: any) => {
+          entry.flavor_text = replaceEscapeChars(entry.flavor_text);
+        });
+        PokemonStats = { ...data, flavor_text_entries: flavorText };
         iziToast.success({
           title: "Success",
           position: "topRight",
@@ -57,38 +68,7 @@ const Search: React.FC = () => {
   }
   return (
     <div className="search h-screen relative flex flex-col p-4 bg-red-500">
-      <nav className="flex justify-between">
-        <h2 className="text-white text-3xl">
-          <Link
-            to="/"
-            className="hover:text-gray-500 transition-all duration-300"
-          >
-            Pokedex
-          </Link>
-        </h2>
-        <h2>
-          <a
-            href="#features"
-            className="flex text-white text-3xl items-center justify-center hover:text-gray-500 transition-all duration-300 cursor-pointer"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-              />
-            </svg>
-            <p className="pl-2">Features</p>
-          </a>
-        </h2>
-      </nav>
+      <Navbar />
       <div className="search-container absolute flex flex-col justify-center">
         <h1 className="text-white text-4xl font-semibold text-center search-head">
           Find your favourite Pokemon

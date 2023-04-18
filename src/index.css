@@ -2,15 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
-  font-family: 'Montserrat', sans-serif;
+body {
+  font-family: "Montserrat", sans-serif;
 }
 
-html::-webkit-scrollbar {
-  width: 0.6rem;
+html::-webkit-scrollbar,
+.types-all-container::-webkit-scrollbar {
+  width: 0.5rem;
 }
 
-html::-webkit-scrollbar-thumb {
+html::-webkit-scrollbar-thumb,
+.types-all-container::-webkit-scrollbar-thumb {
   @apply bg-red-600;
   border-radius: 0px;
 }
@@ -35,7 +37,11 @@ html::-webkit-scrollbar-thumb {
 }
 
 .filter {
-  @apply p-4 px-4 flex justify-between m-4 rounded-full font-semibold text-white hover:border-black hover:border-2 border-2 border-transparent transition-all duration-300;
+  @apply p-4 px-4 flex justify-center m-4 rounded font-semibold text-white hover:border-black hover:border-2 border-2 border-transparent transition-all duration-300 cursor-pointer;
+}
+
+.filter-table {
+  @apply p-2 px-2 flex justify-center m-2 rounded font-semibold text-white hover:border-black hover:border-2 border-2 border-transparent transition-all duration-300 cursor-pointer;
 }
 
 .pokemon-data {
@@ -54,6 +60,14 @@ html::-webkit-scrollbar-thumb {
   @apply p-1 mr-2 uppercase border-black border-2 font-bold rounded-md;
 }
 
+.nav-link {
+  @apply text-black font-medium p-1.5 text-lg border-2 border-transparent rounded mx-4 transition-all ease-in;
+}
+
+.nav-link:hover {
+  @apply border-black;
+}
+
 tr,
 td,
 th,
@@ -65,54 +79,71 @@ table {
 .theme-normal {
   background-color: #a8a878;
 }
+
 .theme-fire {
   background-color: #f08030;
 }
+
 .theme-water {
   background-color: #6890f0;
 }
+
 .theme-grass {
   background-color: #78c850;
 }
+
 .theme-electric {
   background-color: #f8d030;
 }
+
 .theme-ice {
   background-color: #98d8d8;
 }
+
 .theme-fighting {
   background-color: #c03028;
 }
+
 .theme-poison {
   background-color: #a040a0;
 }
+
 .theme-ground {
   background-color: #e0c068;
 }
+
 .theme-flying {
   background-color: #a890f0;
 }
+
 .theme-psychic {
   background-color: #f85888;
 }
+
 .theme-bug {
   background-color: #a8b820;
 }
+
 .theme-rock {
   background-color: #b8a038;
 }
+
 .theme-ghost {
   background-color: #705898;
 }
+
 .theme-dragon {
   background-color: #7038f8;
 }
+
 .theme-dark {
   background-color: #705848;
 }
+
 .theme-steel {
   background-color: #b8b8d0;
 }
+
 .theme-fairy {
   background-color: #ee99ac;
 }

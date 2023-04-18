@@ -94,6 +94,9 @@ const PokemonData: React.FC = () => {
     }
   };
 
+  const replaceEscapeChars = (str: string) =>
+    str.replace(/(\r\n|\n|\r|\f)/gm, " ");
+
   const handleSubmit = useCallback((e: any) => {
     e.preventDefault();
     setSubmit(true);
@@ -119,7 +122,14 @@ const PokemonData: React.FC = () => {
         })
         .then((res) => res.json())
         .then((data) => {
-          setPokeStats(data as PokeStats);
+          console.log(data);
+          const flavorText = data.flavor_text_entries.filter(
+            (entry: any) => entry.language.name === "en"
+          );
+          flavorText.forEach((entry: any) => {
+            entry.flavor_text = replaceEscapeChars(entry.flavor_text);
+          });
+          setPokeStats({ ...data, flavor_text_entries: flavorText });
           iziToast.success({
             title: "Success",
             position: "topLeft",
@@ -157,7 +167,13 @@ const PokemonData: React.FC = () => {
         })
         .then((res) => res.json())
         .then((data) => {
-          setPokeStats(data as PokeStats);
+          const flavorText = data.flavor_text_entries.filter(
+            (entry: any) => entry.language.name === "en"
+          );
+          flavorText.forEach((entry: any) => {
+            entry.flavor_text = replaceEscapeChars(entry.flavor_text);
+          });
+          setPokeStats({ ...data, flavor_text_entries: flavorText });
           iziToast.success({
             title: "Success",
             position: "topLeft",
@@ -267,6 +283,28 @@ const PokemonData: React.FC = () => {
               </div>
             </form>
           </div>
+          <span className="nav-links hidden lg:flex">
+            <div className="mx-4 p-1.5">
+              <Link to="/types" className="nav-link">
+                Types
+              </Link>
+            </div>
+            <div className="mx-4 p-1.5">
+              <Link to="/locations" className="nav-link">
+                Locations
+              </Link>
+            </div>
+            <div className="mx-4 p-1.5">
+              <Link to="/items" className="nav-link">
+                Items
+              </Link>
+            </div>
+            <div className="mx-4 p-1.5">
+              <Link to="/pokedex" className="nav-link">
+                Pokedex
+              </Link>
+            </div>
+          </span>
         </div>
       </nav>
       {Pokemon && type1 ? (
@@ -397,7 +435,7 @@ const PokemonData: React.FC = () => {
               <TabPanels>
                 <TabPanel>
                   <p className="text-justify">
-                    {PokeStats?.flavor_text_entries[5].flavor_text}
+                    {PokeStats?.flavor_text_entries[0].flavor_text}
                   </p>
                   <p className="text-md mb-2">
                     Evolves From:
@@ -529,12 +567,6 @@ const PokemonData: React.FC = () => {
                           <Td>{PokeStats?.base_happiness}</Td>
                           <Th>Base Experience</Th>
                           <Td>{Pokemon?.base_experience}</Td>
-                        </Tr>
-                        <Tr>
-                          <Th>Height</Th>
-                          <Td>{Pokemon?.height}</Td>
-                          <Th>Weight</Th>
-                          <Td>{Pokemon?.weight}</Td>
                         </Tr>
                         <Tr>
                           <Th>Gender Differences</Th>
